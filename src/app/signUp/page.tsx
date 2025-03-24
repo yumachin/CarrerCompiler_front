@@ -6,13 +6,13 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import Header from '@/components/blocks/header/Header';
+import { toastStyle } from '@/styles/toastStyle';
 import { SignUpType } from '@/types/auth/types';
 import { SignUp } from '@/utils/api/auth';
 import { SignUpValidation }  from '@/utils/validations/auth';
-
 
 export default function SignUpPage() {
   const { register, handleSubmit, formState: { errors } } = useForm<SignUpType>({
@@ -27,24 +27,30 @@ export default function SignUpPage() {
     const loadingToast = toast.loading("処理中です...");
 
     try {
-      await SignUp(name, email, password);
-      toast.success("アカウントが作成されました！", {
-        duration: 1200,
-        id: loadingToast
-      });
-      setTimeout(() => {
-        toast.remove();
-        router.push("/dashboard");
-      }, 1200);
+      const res = await SignUp(name, email, password);
+      if (res.ok) {
+        toast.success("アカウントが作成されました！", {
+          duration: 1200,
+          id: loadingToast
+        });
+        setTimeout(() => {
+          toast.remove();
+          router.push("/dashboard");
+        }, 1200);
+      } else {
+        toast.error("そのメールアドレスは既に登録されています。", {
+          style: toastStyle,
+          id: loadingToast
+        });
+      }
     } catch (error) {
-      console.error("アカウント作成エラー", error);
+      console.error(error);
       toast.error("アカウントの作成に失敗しました。", { id: loadingToast });
     }
   };
 
   return (
     <>
-      <Toaster />
       <Header />
       <div className="h-screen flex items-center justify-center bg-emerald-50">
         <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-2xl mt-16">

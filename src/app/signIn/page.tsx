@@ -6,9 +6,11 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 import Header from '@/components/blocks/header/Header';
+import { useAuth } from '@/context/AuthContext';
+import { toastStyle } from '@/styles/toastStyle';
 import { SignInType } from '@/types/auth/types';
 import { SignIn } from '@/utils/api/auth';
 import { SignInValidation } from '@/utils/validations/auth';
@@ -19,29 +21,38 @@ export default function SignInPage() {
     resolver: zodResolver(SignInValidation)
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { setUser } = useAuth();
   const router = useRouter();
 
   const formSubmit = async ({ email, password }: SignInType) => {
     const loadingToast = toast.loading("処理中です...");
     try {
-      await SignIn(email, password);
-      toast.success("ログインに成功しました！", {
-        duration: 1200,
-        id: loadingToast
-      });
-      setTimeout(() => {
-        toast.remove();
-        router.push("/dashboard");
-      }, 1200);
+      const res = await SignIn(email, password);
+      const user = res.data;
+      if (!res.error) {
+        toast.success("ログインに成功しました！", {
+          duration: 1200,
+          id: loadingToast
+        });
+        setTimeout(() => {
+          toast.remove();
+          setUser(user);
+          router.push("/dashboard");
+        }, 1200);
+      } else {
+        toast.error("メールアドレスまたはパスワードが正しくありません。", {
+          style: toastStyle,
+          id: loadingToast
+        });
+      }
     } catch (error) {
-      console.error("ログイン処理に失敗しました。エラーは...", error);
+      console.error(error);
       toast.error("ログインに失敗しました。", { id: loadingToast });
     }
   };
 
   return (
     <>
-      <Toaster />
       <Header />
       <div className="h-screen flex items-center justify-center bg-emerald-50">
         <div className="max-w-md w-full p-8 bg-white rounded-lg shadow-xl mt-16">

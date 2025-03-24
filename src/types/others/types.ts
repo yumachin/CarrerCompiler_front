@@ -9,6 +9,6 @@ export type CompanyType = {
   holidays:     string;
   workingHours: string;
   selectionFlow: string[];
-  other:        string;
   favorite:     boolean;
+  other:        string;
 };

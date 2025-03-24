@@ -1,3 +1,5 @@
+"use client";
+
 import { MenuIcon } from 'lucide-react';
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
@@ -22,8 +24,13 @@ export default function Header( props: HeaderProps ) {
         <button onClick={(prev) => props.setOpen && props.setOpen(!prev)} className="text-white sm:hidden">
           <MenuIcon />
         </button>
-        <div onClick={handleClick} className="flex items-center cursor-pointer">
-          <Image src={CareerCompilerLogo} alt="Career Compiler" width={320} height={320} />
+        <div onClick={handleClick} className="flex items-center cursor-pointer max-w-xs">
+          <Image 
+            src={CareerCompilerLogo} 
+            alt="Career Compiler"
+            style={{ width: "auto", height: "auto"}}
+            priority
+          />
         </div>
       </div>
     </nav>

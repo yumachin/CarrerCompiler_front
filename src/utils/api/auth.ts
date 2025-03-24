@@ -1,29 +1,22 @@
-const API_URL = "http://localhost:3001";
-
 export const SignUp = async ( name: string, email: string, password: string ) => {
   try {
-    await fetch(`${API_URL}/auth`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        name,
-        email,
-        password
-      }),
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, email, password }),
       credentials: 'include'
     });
+    const data = await res.json();
+    return data;
   } catch (error) {
-    console.error("サインアップAPIのエラー", error);
-    // APIの呼び出し元にエラーを伝えるため、APIファイルにはこの処理が必要
+    console.error(error);
     throw new Error('サインアップ失敗');
   }
 };
 
 export const SignIn = async ( email: string, password: string ) => {
   try {
-    await fetch(`${API_URL}/auth/sign_in`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign_in`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -34,15 +27,17 @@ export const SignIn = async ( email: string, password: string ) => {
       }),
       credentials: 'include'
     });
+    const data = await res.json();
+    return data;
   } catch (error) {
-    console.error("ログインAPIのエラー", error);
+    console.error(error);
     throw new Error("ログイン失敗");
   }
 };
 
 export const SignOut = async () => {
   try {
-    await fetch(`${API_URL}/auth/sign_out`, {
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/sign_out`, {
       method: 'DELETE',
       credentials: 'include'
     });

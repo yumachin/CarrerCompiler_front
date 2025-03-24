@@ -1,34 +1,72 @@
+"use client";
+
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderPen, Mail, Settings } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import { useForm } from "react-hook-form";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 
+import { toastStyle } from "@/styles/toastStyle";
 import { SettingType } from "@/types/setting/types";
+import { EditUserProfile } from "@/utils/api/user";
 import { SettingValidation } from "@/utils/validations/setting";
 
 import SignOut from "./SignOut";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
-export default function Setting() {
+export default function Setting(props: SettingProps) {
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
+  const [name, setName] = useState(props.user?.name);
+  const [email, setEmail] = useState(props.user?.email);
+  const router = useRouter();
+
   const { register, handleSubmit, formState: { errors } } = useForm<SettingType>({
     mode: 'onSubmit',
     resolver: zodResolver(SettingValidation)
   });
 
   const formSubmit = async ({ name, email }: SettingType) => {
-    console.log(name, email);
     toast.dismiss();
     const loadingToast = toast.loading("処理中です...");
 
     try {
-      // await SignUp(name, email);
-      toast.success("ユーザー情報を更新しました！", {
-        duration: 1700,
-        id: loadingToast
-      });
+      const res = await EditUserProfile(name, email);
+      console.log("resは", res);
+      if (!res.error) {
+        toast.success("ユーザー情報を更新しました！", {
+          position: 'top-center',
+          duration: 1200,
+          id: loadingToast
+        });
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+        }, 1200);
+      } else if (res.error === "トークン切れ") {
+        toast.error("アクセス権がありません。ログインしなおしてください。", {
+          style: toastStyle,
+          duration: 1200,
+          id: loadingToast
+        });
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          router.push("/signIn");
+        }, 1200);
+      } else {
+        toast.error("ユーザーが見つかりません。ログインしなおしてください。", {
+          style: toastStyle,
+          duration: 1200,
+          id: loadingToast
+        });
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          router.push("/signIn");
+        }, 1200);
+      }
     } catch (error) {
       console.error("ユーザー情報更新エラー", error);
       toast.error("ユーザー情報の更新に失敗しました。", { id: loadingToast });
@@ -37,7 +75,6 @@ export default function Setting() {
 
   return (
     <>
-      <Toaster />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           <div className="flex items-center px-5 py-8 text-gray-100 font-bold gap-3 cursor-pointer">
@@ -64,6 +101,8 @@ export default function Setting() {
                     type="text"
                     {...register("name")} 
                     className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                   />
                   <p className="text-red-400 min-h-[1rem] text-xs mt-1 ml-2">{errors.name?.message as ReactNode}</p>
                 </div>
@@ -83,6 +122,8 @@ export default function Setting() {
                     className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
                     placeholder="carrer@compiler.com"
                     autoComplete="username"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                   />
                   <p className="text-red-400 min-h-[1rem] text-xs mt-1 ml-2">{errors.email?.message as ReactNode}</p>
                 </div>
@@ -116,3 +157,15 @@ export default function Setting() {
     </>
   );
 };
+
+type SettingProps = {
+  user: UserType | null;
+};
+
+type UserType = {
+  id: number;
+  name: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+}

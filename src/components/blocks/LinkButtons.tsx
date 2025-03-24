@@ -1,9 +1,13 @@
 import { Building2, Calendar, FileText } from "lucide-react";
 import Link from "next/link";
 
+import { useAuth } from "@/context/AuthContext";
+
 import Setting from "../modals/Setting";
 
-export default async function LinkButtons() {
+export default function LinkButtons() {
+  const { user } = useAuth();
+
   const items = [
     {
       link: "/dashboard",
@@ -32,7 +36,6 @@ export default async function LinkButtons() {
     }
   ];
 
-
   return (
     <div className="flex flex-col justify-between h-11/12">
       <ul className="divide-y divide-teal-800">
@@ -47,7 +50,7 @@ export default async function LinkButtons() {
           ))
         }
       </ul>
-      <Setting />
+      <Setting user={user} />
     </div>
   );
 };
