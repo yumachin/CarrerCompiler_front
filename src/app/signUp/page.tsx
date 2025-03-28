@@ -28,7 +28,13 @@ export default function SignUpPage() {
 
     try {
       const res = await SignUp(name, email, password);
-      if (res.ok) {
+      console.log("resは", res)
+      if (res.error) {
+        toast.error("そのメールアドレスは既に登録されています。", {
+          style: toastStyle,
+          id: loadingToast
+        });
+      } else {
         toast.success("アカウントが作成されました！", {
           duration: 1200,
           id: loadingToast
@@ -37,11 +43,6 @@ export default function SignUpPage() {
           toast.remove();
           router.push("/dashboard");
         }, 1200);
-      } else {
-        toast.error("そのメールアドレスは既に登録されています。", {
-          style: toastStyle,
-          id: loadingToast
-        });
       }
     } catch (error) {
       console.error(error);
@@ -73,7 +74,7 @@ export default function SignUpPage() {
                   {...register("name")} 
                   className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
                 />
-                <p className="text-red-400 min-h-[1rem] text-xs mt-1 ml-2">{errors.name?.message as ReactNode}</p>
+                <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">{errors.name?.message as ReactNode}</p>
               </div>
             </div>
 
@@ -93,7 +94,7 @@ export default function SignUpPage() {
                   placeholder="carrer@compiler.com"
                   autoComplete="username"
                 />
-                <p className="text-red-400 min-h-[1rem] text-xs mt-1 ml-2">{errors.email?.message as ReactNode}</p>
+                <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">{errors.email?.message as ReactNode}</p>
               </div>
             </div>
 
@@ -124,13 +125,13 @@ export default function SignUpPage() {
                     <EyeIcon className='h-5 w-5' />
                   )}
                 </button>
-                <p className="text-red-400 min-h-[1rem] text-xs mt-1 ml-2">{errors.password?.message as ReactNode}</p>
+                <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">{errors.password?.message as ReactNode}</p>
               </div>
             </div>
 
             <button
               type="submit"
-              className="w-full mt-3 py-2 rounded-md text-sm font-bold text-white bg-emerald-700"
+              className="w-full mt-3 py-2 shadow-lg rounded-md text-sm font-bold text-white bg-emerald-700"
             >
               登録
             </button>

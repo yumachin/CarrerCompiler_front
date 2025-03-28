@@ -36,7 +36,6 @@ export default function Setting(props: SettingProps) {
       console.log("resは", res);
       if (!res.error) {
         toast.success("ユーザー情報を更新しました！", {
-          position: 'top-center',
           duration: 1200,
           id: loadingToast
         });
@@ -99,12 +98,12 @@ export default function Setting(props: SettingProps) {
                   <input
                     id="name"
                     type="text"
-                    {...register("name")} 
+                    {...register("name")}
                     className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
-                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 ml-2">{errors.name?.message as ReactNode}</p>
+                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">{errors.name?.message as ReactNode}</p>
                 </div>
               </div>
               <div>
@@ -125,12 +124,12 @@ export default function Setting(props: SettingProps) {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 ml-2">{errors.email?.message as ReactNode}</p>
+                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">{errors.email?.message as ReactNode}</p>
                 </div>
               </div>
               <button
                 type="submit"
-                className="w-full mt-6 py-2 rounded-md text-sm font-bold text-white bg-emerald-700"
+                className="w-full mt-4 py-2 shadow-md rounded-md text-sm font-bold text-white bg-emerald-700"
               >
                 保存
               </button>
@@ -146,7 +145,7 @@ export default function Setting(props: SettingProps) {
           </div>
           <button
             type="submit"
-            className="w-full mt-3 py-2 rounded-md text-sm font-bold text-white bg-red-500"
+            className="w-full mt-3 py-2 shadow-md rounded-md text-sm font-bold text-white bg-red-500"
             onClick={() => setConfirm(true)}
           >
             ログアウト

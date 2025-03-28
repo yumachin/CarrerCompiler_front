@@ -77,7 +77,7 @@ export default function SignInPage() {
                   placeholder="carrer@compiler.com"
                   autoComplete="username"
                 />
-                <p className="text-red-400 min-h-[1rem] text-xs mt-1 ml-2">{errors.email?.message as ReactNode}</p>
+                <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">{errors.email?.message as ReactNode}</p>
               </div>
             </div>
 
@@ -109,7 +109,7 @@ export default function SignInPage() {
                       <EyeIcon className='h-5 w-5' />
                     )}
                   </button>
-                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 ml-2">{errors.password?.message as ReactNode}</p>
+                  <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">{errors.password?.message as ReactNode}</p>
                 </div>
               </div>
             </div>
@@ -129,7 +129,7 @@ export default function SignInPage() {
 
             <button
               type="submit"
-              className="w-full py-2 rounded-md text-sm font-bold text-white bg-emerald-700"
+              className="w-full py-2 shadow-lg rounded-md text-sm font-bold text-white bg-emerald-700"
             >
               ログイン
             </button>
