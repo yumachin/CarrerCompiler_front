@@ -1,4 +1,4 @@
-export const PostCompany = async (user_id: number, name: string) => {
+export const PostCompany = async (name: string) => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/companies`, {
       method: 'POST',
@@ -6,7 +6,7 @@ export const PostCompany = async (user_id: number, name: string) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        company: { user_id, name }
+        company: { name }
       }),
       credentials: 'include'
     });

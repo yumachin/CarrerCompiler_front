@@ -18,9 +18,23 @@ export type InterviewType = {
   id: number;
   userId: number;
   companyId: number;
+  companyName: string;
   date: string | null;
   interviewType: string;
   selectionId: number;
+  onlineUrl: string;
+  status: boolean;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type MeetingType = {
+  id: number;
+  userId: number;
+  companyId: number;
+  companyName: string;
+  date: string | null;
+  meetingType: string;
   onlineUrl: string;
   status: boolean;
   createdAt: string;

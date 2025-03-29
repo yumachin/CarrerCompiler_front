@@ -1,13 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-  Building2,
-  CalendarDays,
-  GitBranch,
-  Globe,
-  Presentation,
-} from "lucide-react";
+import { Building2, CalendarDays, GitBranch, Globe, Presentation } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
@@ -16,26 +10,13 @@ import toast from "react-hot-toast";
 
 import "react-datepicker/dist/react-datepicker.css";
 
-import { useAuth } from "@/context/AuthContext";
 import { toastStyle } from "@/styles/toastStyle";
 import { PostCompany } from "@/utils/api/company";
 import { PostInterview } from "@/utils/api/interview";
-import { GetUser } from "@/utils/api/user";
 import { InterviewValidation } from "@/utils/validations/post";
 
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export default function AddInterview() {
   const [open, setOpen] = useState(false);
@@ -47,16 +28,7 @@ export default function AddInterview() {
   const [interviewType, setInterviewType] = useState("");
   const [onlineURL, setOnlineURL] = useState("");
 
-  const { user, setUser } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const res = await GetUser();
-      setUser(res);
-    };
-    fetchUser();
-  }, [setUser]);
 
   useEffect(() => {
     switch (selectionId) {
@@ -81,93 +53,46 @@ export default function AddInterview() {
     }
   }, [selectionId]);
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors },
-  } = useForm<InterviewType>({
+  const { register, handleSubmit, control, formState: { errors } } = useForm<InterviewType>({
     mode: "onSubmit",
-    defaultValues: {
-      date: null,
-      selectionId: 0,
-      interviewType: "",
-      onlineURL: "",
-    },
+    defaultValues: { date: null, selectionId: 0, interviewType: "", onlineURL: "" },
     resolver: zodResolver(InterviewValidation),
   });
 
-  const formSubmit = async ({
-    name,
-    date,
-    selectionId,
-    interviewType,
-    onlineURL,
-  }: InterviewType) => {
+  const formSubmit = async ({ name, date, selectionId, interviewType, onlineURL }: InterviewType) => {
     toast.dismiss();
     const loadingToast = toast.loading("処理中です...");
 
     try {
-      if (user === null || user === undefined) {
-        toast.error("アクセス権がありません。ログインしなおしてください。", {
-          style: toastStyle,
+      const company = await PostCompany(name);
+      const res = await PostInterview(company.id, date, selectionId, interviewType, onlineURL);
+      if (!res.error) {
+        toast.success("面接の予定を追加しました！", {
           duration: 1200,
           id: loadingToast,
         });
-        setTimeout(() => {
-          toast.remove();
-          router.push("/signIn");
-        }, 1200);
+        setOpen(false);
+        window.location.reload();
       } else {
-        const company = await PostCompany(user.id, name);
-        const res = await PostInterview(
-          user.id,
-          company.id,
-          date,
-          selectionId,
-          interviewType,
-          onlineURL
-        );
-        console.log("PostInterviewのresは", res);
-        if (!res.error) {
-          toast.success("面接予定を追加しました！", {
-            duration: 1200,
-            id: loadingToast,
-          });
-          setTimeout(() => {
-            toast.remove();
-            setOpen(false);
-          }, 1200);
-        } else if (res.error === "トークン切れ") {
+        if (res.error === "トークン切れ") {
           toast.error("アクセス権がありません。ログインしなおしてください。", {
             style: toastStyle,
             duration: 1200,
-            id: loadingToast,
+            id: loadingToast
           });
-          setTimeout(() => {
-            toast.remove();
-            setOpen(false);
-            router.push("/signIn");
-          }, 1200);
         } else {
-          toast.error(
-            "ユーザーが見つかりません。ログインしなおしてください。",
-            {
-              style: toastStyle,
-              duration: 1200,
-              id: loadingToast,
-            }
-          );
-          setTimeout(() => {
-            toast.remove();
-            setOpen(false);
-            router.push("/signIn");
-          }, 1200);
+          toast.error("ユーザーが見つかりません。ログインしなおしてください。", {
+            style: toastStyle,
+            duration: 1200,
+            id: loadingToast
+          });
         }
+        setOpen(false);
+        router.push("/signIn");
       }
     } catch (error) {
       console.error("面接予定追加エラー", error);
-      toast.error("面接予定の追加に失敗しました。", { id: loadingToast });
+      toast.error("面接の予定の追加に失敗しました。", { id: loadingToast });
     }
   };
 
@@ -393,7 +318,7 @@ export default function AddInterview() {
       </Dialog>
     </>
   );
-}
+};
 
 type InterviewType = {
   name: string;

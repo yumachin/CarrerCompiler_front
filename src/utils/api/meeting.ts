@@ -1,8 +1,8 @@
 import camelcaseKeys from "camelcase-keys";
 
-export const GetInterviews = async () => {
+export const GetMeetings = async () => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/interviews`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/meetings`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -13,19 +13,19 @@ export const GetInterviews = async () => {
     return camelcaseKeys(data, { deep: true });
   } catch (error) {
     console.error(error);
-    throw new Error('面接予定の取得に失敗');
+    throw new Error('面談・説明会予定の取得に失敗');
   }
 };
 
-export const PostInterview = async (company_id: number, date: Date | null | undefined, selection_id: number, interview_type: string, online_url: string) => {
+export const PostMeeting = async (company_id: number, date: Date | null | undefined, meeting_type: string, online_url: string) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/interviews`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/meetings`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        interview: { company_id, date, selection_id, interview_type, online_url }
+        meeting: { company_id, date, meeting_type, online_url }
       }),
       credentials: 'include'
     });
@@ -33,6 +33,6 @@ export const PostInterview = async (company_id: number, date: Date | null | unde
     return data;
   } catch (error) {
     console.error(error);
-    throw new Error('面接予定の追加に失敗');
+    throw new Error('面談・説明会予定の追加に失敗');
   }
 };

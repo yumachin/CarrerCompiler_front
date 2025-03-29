@@ -3,45 +3,66 @@ import { ja } from 'date-fns/locale';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-export default function MeetingCard(props: InterviewCardProps) {
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'scheduled':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">予定</span>;
-      case 'completed':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800">完了</span>;
-      case 'cancelled':
-        return <span className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-red-100 text-red-800">キャンセル</span>;
-      default:
-        return null;
-    }
+import { MeetingType } from '@/types/others/types';
+import { ToggleMeeting } from '@/utils/api/toggle';
+
+export default function MeetingCard(props: MeetingCardProps) {
+  const getStatusBadge = (status: boolean) => {
+    return status ? (
+      <p className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800">
+        完了
+      </p>
+    ) : (
+      <p className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">
+        予定
+      </p>
+    );
   };
 
   return (
-    <li key={props.id} className='flex justify-between items p-5'>
-      <div>
-        <div className="flex items-center">
-          <p className="text-sm font-bold text-indigo-600">{props.company}</p>
-          <p className="ml-4">{getStatusBadge(props.status)}</p>
+    <li className={`p-5 flex items-center ${props.meeting.status ? "bg-rose-100 text-red-500 line-through" : "bg-white"}`}>
+      <input
+        type="checkbox"
+        checked={props.meeting.status}
+        onChange={() => {
+          ToggleMeeting(props.meeting.id, props.meeting.status)
+          window.location.reload();
+        }}
+        className="mr-6 w-4 h-4 accent-emerald-600 cursor-pointer"
+      />
+
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <p className="text-sm font-bold text-indigo-600">{props.meeting.companyName}</p>
+            <button className="ml-4">{getStatusBadge(props.meeting.status)}</button>
+          </div>
         </div>
-        <div className="sm:flex sm:justify-between mt-3 space-x-3 text-sm text-gray-500">
-          <p>{format(props.date, 'yyyy年MM月dd日(E) HH:mm', { locale: ja })}</p>
-          <p>/</p>
-          <p>{props.location}</p>
+        <div className="mt-3 sm:flex sm:justify-between text-sm text-gray-500">
+          <div className="flex space-x-3">
+            {props.meeting.date !== null &&
+              <p>{format(props.meeting.date, "yyyy年MM月dd日(E) HH:mm", { locale: ja })}</p>
+            }
+            {props.meeting.date !== null && props.meeting.meetingType !== "" && <p>/</p>}
+            <p>{props.meeting.meetingType}</p>
+          </div>
+          {props.meeting.onlineUrl !== "" && (
+            <Link
+              href={props.meeting.onlineUrl}
+              className="flex items-center text-sm text-indigo-500 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              面談・説明会を始める
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Link>
+          )}
         </div>
       </div>
-      <Link href="/" className="flex items-center text-sm text-indigo-500 underline">
-        面談を始める
-        <ArrowRight className="h-4 w-4 ml-2" />
-      </Link>
     </li>
   );
 };
 
-type InterviewCardProps = {
-  id: number;
-  company: string;
-  date: Date;
-  status: string;
-  location: string;
-}
+type MeetingCardProps = {
+  meeting: MeetingType; 
+};

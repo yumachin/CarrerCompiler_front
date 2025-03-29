@@ -10,4 +10,13 @@ export const InterviewValidation = z.object({
   onlineURL: z.string().refine(value => value === "" || z.string().url().safeParse(value).success, {
     message: "URLが無効です。"
   })
-})
+});
+
+export const MeetingValidation = z.object({
+  name: z.string().min(1, "必須項目です。").max(30, "30文字以内で入力して下さい。"),
+  date: z.date().nullable().optional(),
+  meetingType: z.string().max(30, "30文字以内で入力して下さい。"),
+  onlineURL: z.string().refine(value => value === "" || z.string().url().safeParse(value).success, {
+    message: "URLが無効です。"
+  })
+});
