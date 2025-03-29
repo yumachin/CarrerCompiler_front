@@ -40,3 +40,18 @@ export type MeetingType = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type SubmissionType = {
+  id: number
+  userId: number;
+  companyId: number;
+  companyName: string;
+  deadline: string | null;
+  submissionType: number;
+  status: boolean;
+  contactMedia: string;
+  submissionUrl: string;
+  iconId: number;
+  createdAt: string;
+  updatedAt: string;
+};

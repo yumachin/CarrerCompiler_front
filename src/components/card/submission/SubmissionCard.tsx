@@ -1,61 +1,111 @@
-import { FileText, SquarePen, CodeXml } from "lucide-react";
+import { format } from 'date-fns';
+import { ja } from 'date-fns/locale';
+import { ArrowRight } from 'lucide-react';
+import Link from 'next/link';
+
+import EditSubmission from '@/components/modals/EditSubmission';
+import { SubmissionType } from '@/types/others/types';
+import { ToggleSubmission } from '@/utils/api/toggle';
 
 export default function SubmissionCard(props: SubmissionCardProps) {
-  const getIcon = (iconId: number) => {
-    switch (iconId) {
-      case 1:
-        return <FileText className="h-6 w-6 text-gray-400" />;
-      case 2:
-        return <SquarePen className="h-6 w-6 text-gray-400" />;
-      case 3:
-        return <CodeXml className="h-6 w-6 text-gray-400" />;
-      default:
-        return <div className="h-6 w-6"></div>;
-    }
+  const getStatusBadge = (status: boolean) => {
+    return status ? (
+      <p className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-green-100 text-green-800">
+        提出済
+      </p>
+    ) : (
+      <p className="px-2.5 py-0.5 rounded-full text-xs font-bold bg-blue-100 text-blue-800">
+        未提出
+      </p>
+    );
   };
 
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'pending':
-        return <span className="px-3 py-1 rounded-full text-xs font-bold bg-yellow-100 text-yellow-800">未提出</span>;
-      case 'submitted':
-        return <span className="px-3 py-1 rounded-full text-xs font-bold bg-green-100 text-green-800">提出済</span>;
-      case 'rejected':
-        return <span className="px-3 py-1 rounded-full text-xs font-bold bg-red-100 text-red-800">不採用</span>;
-      case 'accepted':
-        return <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-800">採用</span>;
-      default:
-        return null;
+  const getSubmissionTypeBadge = (submissionType: number) => {
+    switch (submissionType) {
+      case 1: return   (
+        <p className="px-2.5 py-0.5 text-xs rounded-full font-bold bg-indigo-200 text-indigo-800">
+          ES
+        </p>
+      )
+      case 2: return   (
+        <p className="px-2.5 py-0.5 text-xs rounded-full font-bold bg-teal-200 text-teal-800">
+          履歴書
+        </p>
+      )
+      case 3: return   (
+        <p className="px-2.5 py-0.5 text-xs rounded-full font-bold bg-lime-200 text-lime-800">
+          適性検査
+        </p>
+      )
+      case 4: return   (
+        <p className="px-2.5 py-0.5 text-xs rounded-full font-bold bg-amber-200 text-amber-800">
+          SPI
+        </p>
+      )
+      case 5: return  (
+        <p className="px-2.5 py-0.5 text-xs rounded-full font-bold bg-red-200 text-red-800">
+          コーディングテスト
+        </p>
+      )
+      case 6: return  (
+        <p className="px-2.5 py-0.5 text-xs rounded-full font-bold bg-fuchsia-200 text-fuchsia-800">
+          アンケート
+        </p>
+      )
+      default: return;
     }
   };
 
   return (
-    <li key={props.id} className="p-4">
-      <div className="flex items-center space-x-4">
-        {getIcon(props.iconId)}
-        <div className="flex-1">
-          <div className="flex justify-between">
-            <p className="text-sm font-bold text-indigo-600">{props.company}</p>
-            {getStatusBadge(props.status)}
+    <li className={`p-5 flex items-center ${props.submission.status ? "bg-rose-100 text-red-500 line-through" : "bg-white"}`}>
+      <input
+        type="checkbox"
+        checked={props.submission.status}
+        onChange={() => {
+          ToggleSubmission(props.submission.id, props.submission.status)
+          window.location.reload();
+        }}
+        className="mr-6 w-4 h-4 accent-emerald-600 cursor-pointer"
+      />
+
+      <div className="flex-1">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center">
+            <p className="text-sm font-bold text-indigo-600">{props.submission.companyName}</p>
+            <button className="ml-4">{getStatusBadge(props.submission.status)}</button>
           </div>
-          <div className="mt-1 text-sm text-gray-500">
-            <p>{props.type}</p>
-            <p>提出期限: {props.deadline}</p>
-          </div>
+          <EditSubmission />
         </div>
-        <button className="px-3 py-2 border shadow text-sm font-bold rounded-md text-gray-700 bg-white">
-          詳細
-        </button>
+        <div className="mt-3 sm:flex sm:justify-between text-sm text-gray-500">
+          <div className="flex space-x-3">
+            {props.submission.deadline !== null &&
+              <p>{format(props.submission.deadline, "yyyy年MM月dd日(E) HH:mm", { locale: ja })}</p>
+            }
+            {props.submission.deadline !== null && (props.submission.submissionType !== 0 || props.submission.contactMedia !== "")  && <p>/</p>}
+            {props.submission.contactMedia !== "" &&
+              <p>{props.submission.contactMedia}</p>
+            }
+            {props.submission.contactMedia !== "" && props.submission.submissionType !== 0 && <p>/</p>}
+            {getSubmissionTypeBadge(props.submission.submissionType)}
+          </div>
+          {props.submission.submissionUrl !== "" && (
+            <Link
+              href={props.submission.submissionUrl}
+              className="flex items-center text-sm text-indigo-500 underline"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              提出する
+              <ArrowRight className="h-4 w-4 ml-2" />
+            </Link>
+          )}
+        </div>
       </div>
     </li>
+
   );
 };
 
 type SubmissionCardProps = {
-  id: number;
-  company: string;
-  type: string;
-  deadline: string;
-  status: string;
-  iconId: number;
+  submission: SubmissionType; 
 };

@@ -1,8 +1,8 @@
 import camelcaseKeys from "camelcase-keys";
 
-export const GetCompanies = async () => {
+export const GetSubmissions = async () => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/companies`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/submissions`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
@@ -13,19 +13,19 @@ export const GetCompanies = async () => {
     return camelcaseKeys(data, { deep: true });
   } catch (error) {
     console.error(error);
-    throw new Error('会社一覧の取得に失敗');
+    throw new Error('提出物・タスクの取得に失敗');
   }
 };
 
-export const PostCompany = async (name: string) => {
+export const PostSubmission = async (company_id: number, deadline: Date | null | undefined, submission_type: number, contact_media: string, submission_url: string) => {
   try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/companies`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/submissions`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        company: { name }
+        submission: { company_id, deadline, submission_type, contact_media, submission_url }
       }),
       credentials: 'include'
     });
@@ -33,6 +33,6 @@ export const PostCompany = async (name: string) => {
     return data;
   } catch (error) {
     console.error(error);
-    throw new Error('会社の追加に失敗');
+    throw new Error('提出物・タスクの追加に失敗');
   }
 };

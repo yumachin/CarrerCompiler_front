@@ -20,3 +20,13 @@ export const MeetingValidation = z.object({
     message: "URLが無効です。"
   })
 });
+
+export const SubmissionValidation = z.object({
+  name: z.string().min(1, "必須項目です。").max(30, "30文字以内で入力して下さい。"),
+  deadline: z.date().nullable().optional(),
+  submissionId: z.number(),
+  contactMedia: z.string().max(30, "30文字以内で入力して下さい。"),
+  submissionURL: z.string().refine(value => value === "" || z.string().url().safeParse(value).success, {
+    message: "URLが無効です。"
+  })
+});
