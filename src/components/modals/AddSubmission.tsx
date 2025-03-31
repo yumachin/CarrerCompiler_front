@@ -21,12 +21,12 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigge
 export default function AddSubmission() {
   const [open, setOpen] = useState(false);
 
-  const [name, setName] = useState("");
+  const [companyName, setCompanyName] = useState("");
   const [deadline, setDeadline] = useState<Date | null | undefined>(null);
   const [submission, setSubmission] = useState("");
   const [submissionType, setSubmissionType] = useState(0);
   const [contactMedia, setContactMedia] = useState("");
-  const [submissionURL, setSubmissionURL] = useState("");
+  const [submissionUrl, setSubmissionUrl] = useState("");
 
   const router = useRouter();
 
@@ -58,17 +58,17 @@ export default function AddSubmission() {
 
   const { register, handleSubmit, control, formState: { errors } } = useForm<SubmissionType>({
     mode: "onSubmit",
-    defaultValues: { deadline: null, submissionId: 0, contactMedia: "", submissionURL: "" },
-    resolver: zodResolver(SubmissionValidation),
+    defaultValues: { deadline: null, submissionId: 0, contactMedia: "", submissionUrl: "" },
+    resolver: zodResolver(SubmissionValidation)
   });
 
-  const formSubmit = async ({ name, deadline, submissionURL }: SubmissionType) => {
+  const formSubmit = async ({ companyName, deadline, submissionUrl }: SubmissionType) => {
     toast.dismiss();
     const loadingToast = toast.loading("処理中です...");
 
     try {
-      const company = await PostCompany(name);
-      const res = await PostSubmission(company.id, deadline, submissionType, contactMedia, submissionURL);
+      const company = await PostCompany(companyName);
+      const res = await PostSubmission(company.id, deadline, submissionType, contactMedia, submissionUrl);
       if (!res.error) {
         toast.success("面談・説明会の予定を追加しました！", {
           duration: 1200,
@@ -122,7 +122,7 @@ export default function AddSubmission() {
             <form onSubmit={handleSubmit(formSubmit)}>
               <div>
                 <label
-                  htmlFor="name"
+                  htmlFor="companyName"
                   className="text-sm font-bold text-gray-700"
                 >
                   会社名
@@ -132,16 +132,82 @@ export default function AddSubmission() {
                     <Building2 className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
-                    id="name"
+                    id="companyName"
                     type="text"
-                    {...register("name")}
+                    {...register("companyName")}
                     placeholder="株式会社CareerCompiler"
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                    value={name}
-                    onChange={(e) => setName(e.target.value)}
+                    value={companyName}
+                    onChange={(e) => setCompanyName(e.target.value)}
                   />
                   <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
-                    {errors.name?.message as ReactNode}
+                    {errors.companyName?.message as ReactNode}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <div className="flex justify-between items-end">
+                  <label className="text-sm font-bold text-gray-700">
+                    提出期限
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setDeadline(null)}
+                    className="mr-2 text-xs font-bold text-red-400 cursor-pointer"
+                  >
+                    クリア
+                  </button>
+                </div>
+                <div className="mt-1 relative">
+                  <div className="absolute top-1/3 left-3 -translate-y-[45%] pointer-events-none">
+                    <CalendarDays className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <Controller
+                    control={control}
+                    name="deadline"
+                    render={({ field }) => (
+                      <DatePicker
+                        selected={deadline}
+                        onChange={(selectedDate) => {
+                          setDeadline(selectedDate);
+                          field.onChange(selectedDate);
+                        }}
+                        showTimeSelect
+                        timeFormat="HH:mm"
+                        timeIntervals={30}
+                        dateFormat="yyyy/MM/dd HH:mm"
+                        className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm cursor-pointer"
+                        wrapperClassName="w-full"
+                      />
+                    )}
+                  />
+                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
+                    {errors.deadline?.message as ReactNode}
+                  </p>
+                </div>
+              </div>
+              <div>
+                <label
+                  htmlFor="contactMedia"
+                  className="text-sm font-bold text-gray-700"
+                >
+                  連絡媒体
+                </label>
+                <div className="mt-1 relative">
+                  <div className="absolute top-1/3 left-3 -translate-y-[45%] pointer-events-none">
+                    <Mail className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    id="contactMedia"
+                    type="text"
+                    {...register("contactMedia")}
+                    placeholder="Gmail / Outlook / レバテック"
+                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm"
+                    value={contactMedia}
+                    onChange={(e) => setContactMedia(e.target.value)}
+                  />
+                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
+                    {errors.contactMedia?.message as ReactNode}
                   </p>
                 </div>
               </div>
@@ -234,74 +300,8 @@ export default function AddSubmission() {
                 </div>
               </div>
               <div>
-                <div className="flex justify-between items-end">
-                  <label className="text-sm font-bold text-gray-700">
-                    提出期限
-                  </label>
-                  <button
-                    type="button"
-                    onClick={() => setDeadline(null)}
-                    className="mr-2 text-xs font-bold text-red-400 cursor-pointer"
-                  >
-                    クリア
-                  </button>
-                </div>
-                <div className="mt-1 relative">
-                  <div className="absolute top-1/3 left-3 -translate-y-[45%] pointer-events-none">
-                    <CalendarDays className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <Controller
-                    control={control}
-                    name="deadline"
-                    render={({ field }) => (
-                      <DatePicker
-                        selected={deadline}
-                        onChange={(selectedDate) => {
-                          setDeadline(selectedDate);
-                          field.onChange(selectedDate);
-                        }}
-                        showTimeSelect
-                        timeFormat="HH:mm"
-                        timeIntervals={30}
-                        dateFormat="yyyy/MM/dd HH:mm"
-                        className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm cursor-pointer"
-                        wrapperClassName="w-full"
-                      />
-                    )}
-                  />
-                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
-                    {errors.deadline?.message as ReactNode}
-                  </p>
-                </div>
-              </div>
-              <div>
                 <label
-                  htmlFor="contactMedia"
-                  className="text-sm font-bold text-gray-700"
-                >
-                  連絡媒体
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute top-1/3 left-3 -translate-y-[45%] pointer-events-none">
-                    <Mail className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="contactMedia"
-                    type="text"
-                    {...register("contactMedia")}
-                    placeholder="Gmail / Outlook / レバテック"
-                    className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                    value={contactMedia}
-                    onChange={(e) => setContactMedia(e.target.value)}
-                  />
-                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
-                    {errors.contactMedia?.message as ReactNode}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="submissionURL"
+                  htmlFor="submissionUrl"
                   className="text-sm font-bold text-gray-700"
                 >
                   提出先URL
@@ -311,16 +311,16 @@ export default function AddSubmission() {
                     <Globe className="h-5 w-5 text-gray-400" />
                   </div>
                   <input
-                    id="submissionURL"
+                    id="submissionUrl"
                     type="text"
-                    {...register("submissionURL")}
+                    {...register("submissionUrl")}
                     placeholder="https://career.com"
                     className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                    value={submissionURL}
-                    onChange={(e) => setSubmissionURL(e.target.value)}
+                    value={submissionUrl}
+                    onChange={(e) => setSubmissionUrl(e.target.value)}
                   />
                   <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
-                    {errors.submissionURL?.message as ReactNode}
+                    {errors.submissionUrl?.message as ReactNode}
                   </p>
                 </div>
               </div>
@@ -336,9 +336,9 @@ export default function AddSubmission() {
 };
 
 type SubmissionType = {
-  name: string;
+  companyName: string;
   deadline?: Date | null | undefined;
   submissionId: number;
   contactMedia: string;
-  submissionURL: string;
+  submissionUrl: string;
 };

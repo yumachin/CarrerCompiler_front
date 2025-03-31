@@ -3,6 +3,7 @@ import { ja } from 'date-fns/locale';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
+import DeleteSubmission from '@/components/modals/DeleteSubmission';
 import EditSubmission from '@/components/modals/EditSubmission';
 import { SubmissionType } from '@/types/others/types';
 import { ToggleSubmission } from '@/utils/api/toggle';
@@ -23,7 +24,7 @@ export default function SubmissionCard(props: SubmissionCardProps) {
   const getSubmissionTypeBadge = (submissionType: number) => {
     switch (submissionType) {
       case 1: return   (
-        <p className="px-2.5 py-0.5 text-xs rounded-full font-bold bg-indigo-200 text-indigo-800">
+        <p className="px-2.5 py-0.5 text-xs rounded-full font-bold bg-stone-200 text-stone-800">
           ES
         </p>
       )
@@ -68,13 +69,16 @@ export default function SubmissionCard(props: SubmissionCardProps) {
         className="mr-6 w-4 h-4 accent-emerald-600 cursor-pointer"
       />
 
-      <div className="flex-1">
+      <div className="flex-1 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <p className="text-sm font-bold text-indigo-600">{props.submission.companyName}</p>
             <button className="ml-4">{getStatusBadge(props.submission.status)}</button>
           </div>
-          <EditSubmission />
+          <div className='flex space-x-6'>
+            <EditSubmission submission={props.submission} />
+            <DeleteSubmission id={props.submission.id} />
+          </div>
         </div>
         <div className="mt-3 sm:flex sm:justify-between text-sm text-gray-500">
           <div className="flex space-x-3">
@@ -91,7 +95,7 @@ export default function SubmissionCard(props: SubmissionCardProps) {
           {props.submission.submissionUrl !== "" && (
             <Link
               href={props.submission.submissionUrl}
-              className="flex items-center text-sm text-indigo-500 underline"
+              className="flex items-center text-sm mr-3 text-indigo-500 underline"
               target="_blank"
               rel="noopener noreferrer"
             >

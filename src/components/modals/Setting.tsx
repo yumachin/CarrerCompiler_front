@@ -33,7 +33,6 @@ export default function Setting(props: SettingProps) {
 
     try {
       const res = await EditUserProfile(name, email);
-      console.log("resは", res);
       if (!res.error) {
         toast.success("ユーザー情報を更新しました！", {
           duration: 1200,
