@@ -5,12 +5,12 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 import { toastStyle } from "@/styles/toastStyle";
-import { DestroySubmission } from "@/utils/api/submission";
+import { DestroyInterview } from "@/utils/api/interview";
 
 import { Button } from "../ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
-export default function DeleteSubmission({ id }: { id: number }) {
+export default function DeleteInterview({ id }: { id: number }) {
   const [confirm, setConfirm] = useState(false);
   const router = useRouter();
 
@@ -19,9 +19,9 @@ export default function DeleteSubmission({ id }: { id: number }) {
     const loadingToast = toast.loading("削除中です...");
 
     try {
-      const res = await DestroySubmission(id);
+      const res = await DestroyInterview(id);
       if (!res.error) {
-        toast.success("提出物・タスクの削除に成功しました！", {
+        toast.success("面接の削除に成功しました！", {
           duration: 1200,
           id: loadingToast,
         });

@@ -1,7 +1,7 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Building2, CalendarDays, ClipboardCheck, Globe, Mail } from "lucide-react";
+import { Building2, CalendarDays, GitBranch, Globe, Presentation } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { ReactNode, useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
@@ -13,76 +13,73 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import { toastStyle } from "@/styles/toastStyle";
 import { UpdateCompany } from "@/utils/api/company";
-import { UpdateSubmission } from "@/utils/api/submission";
+import { UpdateInterview } from "@/utils/api/interview";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
-export default function EditSubmission(props: EditSubmissionProps) {
+export default function EditInterview(props: EditInterviewProps) {
   const [open, setOpen] = useState(false);
 
-  const [companyName, setCompanyName] = useState(props.submission.companyName);
-  const [deadline, setDeadline] = useState<Date | null | undefined>(props.submission.deadline ? new Date(props.submission.deadline) : null);
-  const [submission, setSubmission] = useState("");
-  const [submissionType, setSubmissionType] = useState(props.submission.submissionType);
-  const [contactMedia, setContactMedia] = useState(props.submission.contactMedia);
-  const [submissionUrl, setSubmissionUrl] = useState(props.submission.submissionUrl);
+  const [companyName, setCompanyName] = useState(props.interview.companyName);
+  const [date, setDate] = useState<Date | null | undefined>(props.interview.date ? new Date(props.interview.date) : null);
+  const [selection, setSelection] = useState("");
+  const [selectionId, setSelectionId] = useState(props.interview.selectionId);
+  const [interviewType, setInterviewType] = useState(props.interview.interviewType);
+  const [onlineUrl, setOnlineUrl] = useState(props.interview.onlineUrl);
 
   const router = useRouter();
 
   useEffect(() => {
-    switch (submissionType) {
+    switch (selectionId) {
       case 0:
-        setSubmission("");
+        setSelection("");
         break;
       case 1:
-        setSubmission("ES");
+        setSelection("1次面接");
         break;
       case 2:
-        setSubmission("履歴書");
+        setSelection("2次面接");
         break;
       case 3:
-        setSubmission("適性検査");
+        setSelection("3次面接");
         break;
       case 4:
-        setSubmission("SPI");
+        setSelection("4次面接");
         break;
-      case 5:
-        setSubmission("コーディングテスト");
-        break;
-      case 6:
-        setSubmission("アンケート");
+      case 10:
+        setSelection("最終面接");
         break;
     }
-  }, [submissionType]);
+  }, [selectionId]);
 
-  const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<SubmissionType>({
+  const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<InterviewType>({
     mode: "onSubmit",
     defaultValues: {
-      deadline: props.submission.deadline ? new Date(props.submission.deadline) : null, 
-      submissionType: props.submission.submissionType, 
-      contactMedia: props.submission.contactMedia, 
-      submissionUrl: props.submission.submissionUrl 
+      date: props.interview.date ? new Date(props.interview.date) : null,
+      selectionId: props.interview.selectionId,
+      interviewType: props.interview.interviewType, 
+      onlineUrl: props.interview.onlineUrl 
     },
-    resolver: zodResolver(SubmissionValidation)
+    resolver: zodResolver(InterviewValidation)
   });
 
-  const formSubmit = async ({ companyName, deadline, submissionUrl }: SubmissionType) => {
+  const formSubmit = async ({ companyName, date, onlineUrl }: InterviewType) => {
     toast.dismiss();
     const loadingToast = toast.loading("編集中です...");
 
     try {
-      await UpdateCompany(props.submission.companyId, companyName);
-      const res = await UpdateSubmission(
-        props.submission.id,
-        props.submission.companyId,
-        deadline,
-        submissionType,
-        contactMedia,
-        submissionUrl
+      await UpdateCompany(props.interview.companyId, companyName);
+      const res = await UpdateInterview(
+        props.interview.id,
+        props.interview.companyId,
+        date,
+        selectionId,
+        interviewType,
+        onlineUrl
       );
       if (!res.error) {
-        toast.success("提出物・タスクの編集に成功しました！", {
+        toast.success("面接の編集に成功しました！", {
           duration: 1200,
           id: loadingToast,
         });
@@ -106,8 +103,8 @@ export default function EditSubmission(props: EditSubmissionProps) {
         router.push("/signIn");
       }
     } catch (error) {
-      console.error("面談・説明会予定編集エラー", error);
-      toast.error("面談・説明会の予定の編集に失敗しました。", {
+      console.error("面接編集エラー", error);
+      toast.error("面接の編集に失敗しました。", {
         id: loadingToast,
       });
     }
@@ -127,7 +124,7 @@ export default function EditSubmission(props: EditSubmissionProps) {
         <div className="space-y-4">
           <DialogHeader>
             <DialogTitle className="text-lg">
-              提出物・タスクを入力
+              面接内容を入力
             </DialogTitle>
           </DialogHeader>
           <form onSubmit={handleSubmit(formSubmit)}>
@@ -157,16 +154,15 @@ export default function EditSubmission(props: EditSubmissionProps) {
               </div>
             </div>          
             <div>
-            <div>
               <div className="flex justify-between items-end">
                 <label className="text-sm font-bold text-gray-700">
-                  提出期限
+                  実施日
                 </label>
                 <button
                   type="button"
                   onClick={() => {
-                    setDeadline(null)
-                    setValue("deadline", null)
+                    setDate(null)
+                    setValue("date", null)
                   }}
                   className="mr-2 text-xs font-bold text-red-400 cursor-pointer"
                 >
@@ -179,12 +175,12 @@ export default function EditSubmission(props: EditSubmissionProps) {
                 </div>
                 <Controller
                   control={control}
-                  name="deadline"
+                  name="date"
                   render={({ field }) => (
                     <DatePicker
-                      selected={deadline}
+                      selected={date}
                       onChange={(selectedDate) => {
-                        setDeadline(selectedDate);
+                        setDate(selectedDate);
                         field.onChange(selectedDate);
                       }}
                       showTimeSelect
@@ -197,44 +193,45 @@ export default function EditSubmission(props: EditSubmissionProps) {
                   )}
                 />
                 <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
-                  {errors.deadline?.message as ReactNode}
+                  {errors.date?.message as ReactNode}
                 </p>
               </div>
             </div>
+            <div>
               <label
-                htmlFor="contactMedia"
+                htmlFor="interviewType"
                 className="text-sm font-bold text-gray-700"
               >
-                連絡媒体
+                実施形態・場所
               </label>
               <div className="mt-1 relative">
                 <div className="absolute top-1/3 left-3 -translate-y-[45%] pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <Presentation className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="contactMedia"
+                  id="interviewType"
                   type="text"
-                  {...register("contactMedia")}
-                  placeholder="Gmail / Outlook / レバテック"
-                  className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                  value={contactMedia}
-                  onChange={(e) => setContactMedia(e.target.value)}
+                  {...register("interviewType")}
+                  placeholder="対面 / 東京本社"
+                  className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
+                  value={interviewType}
+                  onChange={(e) => setInterviewType(e.target.value)}
                 />
                 <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
-                  {errors.contactMedia?.message as ReactNode}
+                  {errors.interviewType?.message as ReactNode}
                 </p>
               </div>
             </div>
             <div>
               <div className="flex justify-between items-end">
                 <label className="text-sm font-bold text-gray-700">
-                  提出物・タスク
+                  選考状況
                 </label>
                 <button
                   type="button"
                   onClick={() => {
-                    setSubmissionType(0)
-                    setValue("submissionType", 0)
+                    setSelectionId(0)
+                    setValue("selectionId", 0)
                   }}
                   className="mr-2 text-xs font-bold text-red-400 cursor-pointer"
                 >
@@ -243,82 +240,74 @@ export default function EditSubmission(props: EditSubmissionProps) {
               </div>
               <div className="mt-1 relative">
                 <div className="absolute top-1/3 left-3 -translate-y-[45%] pointer-events-none">
-                  <ClipboardCheck className="h-5 w-5 text-gray-400" />
+                  <GitBranch className="h-5 w-5 text-gray-400" />
                 </div>
                 <Controller
                   control={control}
-                  name="submissionType"
+                  name="selectionId"
                   render={({ field }) => (
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
-                          id="submissionType"
+                          id="selection"
                           className="flex min-h-[2.6rem] w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm text-md font-normal cursor-pointer"
                         >
-                          {submission}
+                          {selection}
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
                         <DropdownMenuItem
                           onClick={() => {
-                            setSubmissionType(1);
+                            setSelectionId(1);
                             field.onChange(1);
                           }}
                         >
-                          ES
+                          1次面接
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
-                            setSubmissionType(2);
+                            setSelectionId(2);
                             field.onChange(2);
                           }}
                         >
-                          履歴書
+                          2次面接
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
-                            setSubmissionType(3);
+                            setSelectionId(3);
                             field.onChange(3);
                           }}
                         >
-                          適性検査
+                          3次面接
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
-                            setSubmissionType(4);
+                            setSelectionId(4);
                             field.onChange(4);
                           }}
                         >
-                          SPI
+                          4次面接
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => {
-                            setSubmissionType(5);
-                            field.onChange(5);
+                            setSelectionId(10);
+                            field.onChange(10);
                           }}
                         >
-                          コーディングテスト
-                        </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setSubmissionType(6);
-                            field.onChange(6);
-                          }}
-                        >
-                          アンケート
+                          最終面接
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>
                   )}
                 />
                 <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
-                  {errors.submissionType?.message as ReactNode}
+                  {errors.selectionId?.message as ReactNode}
                 </p>
               </div>
             </div>
             <div>
               <label
-                htmlFor="submissionUrl"
+                htmlFor="onlineUrl"
                 className="text-sm font-bold text-gray-700"
               >
                 提出先URL
@@ -330,14 +319,14 @@ export default function EditSubmission(props: EditSubmissionProps) {
                 <input
                   id="submissionUrl"
                   type="text"
-                  {...register("submissionUrl")}
+                  {...register("onlineUrl")}
                   placeholder="https://career.com"
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                  value={submissionUrl}
-                  onChange={(e) => setSubmissionUrl(e.target.value)}
+                  value={onlineUrl}
+                  onChange={(e) => setOnlineUrl(e.target.value)}
                 />
                 <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
-                  {errors.submissionUrl?.message as ReactNode}
+                  {errors.onlineUrl?.message as ReactNode}
                 </p>
               </div>
             </div>
@@ -351,34 +340,34 @@ export default function EditSubmission(props: EditSubmissionProps) {
   );
 };
 
-type EditSubmissionProps = {
-  submission: SubmissionTypeProps;
+type EditInterviewProps = {
+  interview: InterviewTypeProps;
 };
 
-type SubmissionTypeProps = {
+type InterviewTypeProps = {
   id: number;
   companyId: number;
   companyName: string;
-  deadline?: string | null | undefined;
-  submissionType: number;
-  contactMedia: string;
-  submissionUrl: string;
+  date?: string | null | undefined;
+  selectionId: number;
+  interviewType: string;
+  onlineUrl: string;
 };
 
-type SubmissionType = {
+type InterviewType = {
   companyName: string;
-  deadline?: Date | null | undefined;
-  submissionType: number;
-  contactMedia: string;
-  submissionUrl: string;
+  date?: Date | null | undefined;
+  selectionId: number;
+  interviewType: string;
+  onlineUrl: string;
 };
 
-const SubmissionValidation = z.object({
+const InterviewValidation = z.object({
   companyName: z.string().min(1, "必須項目です。").max(30, "30文字以内で入力して下さい。"),
-  deadline: z.date().nullable().optional(),
-  submissionType: z.number(),
-  contactMedia: z.string().max(30, "30文字以内で入力して下さい。"),
-  submissionUrl: z.string().refine(
+  date: z.date().nullable().optional(),
+  selectionId: z.number(),
+  interviewType: z.string(),
+  onlineUrl: z.string().refine(
     (value) => value === "" || z.string().url().safeParse(value).success, { message: "URLが無効です。" }
   )
 });

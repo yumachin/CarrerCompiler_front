@@ -180,9 +180,34 @@ export default function AddInterview() {
                 </div>
               </div>
               <div>
+                <label
+                  htmlFor="interviewType"
+                  className="text-sm font-bold text-gray-700"
+                >
+                  実施形態・場所
+                </label>
+                <div className="mt-1 relative">
+                  <div className="absolute top-1/3 left-3 -translate-y-[45%] pointer-events-none">
+                    <Presentation className="h-5 w-5 text-gray-400" />
+                  </div>
+                  <input
+                    id="interviewType"
+                    type="text"
+                    {...register("interviewType")}
+                    placeholder="対面 / 東京本社"
+                    className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
+                    value={interviewType}
+                    onChange={(e) => setInterviewType(e.target.value)}
+                  />
+                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
+                    {errors.interviewType?.message as ReactNode}
+                  </p>
+                </div>
+              </div>
+              <div>
                 <div className="flex justify-between items-end">
                   <label className="text-sm font-bold text-gray-700">
-                    選考ステータス
+                    選考状況
                   </label>
                   <button
                     type="button"
@@ -256,31 +281,6 @@ export default function AddInterview() {
                   />
                   <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
                     {errors.selectionId?.message as ReactNode}
-                  </p>
-                </div>
-              </div>
-              <div>
-                <label
-                  htmlFor="interviewType"
-                  className="text-sm font-bold text-gray-700"
-                >
-                  実施形態・場所
-                </label>
-                <div className="mt-1 relative">
-                  <div className="absolute top-1/3 left-3 -translate-y-[45%] pointer-events-none">
-                    <Presentation className="h-5 w-5 text-gray-400" />
-                  </div>
-                  <input
-                    id="interviewType"
-                    type="text"
-                    {...register("interviewType")}
-                    placeholder="対面 / 東京本社"
-                    className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
-                    value={interviewType}
-                    onChange={(e) => setInterviewType(e.target.value)}
-                  />
-                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
-                    {errors.interviewType?.message as ReactNode}
                   </p>
                 </div>
               </div>

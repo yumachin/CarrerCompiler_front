@@ -3,6 +3,8 @@ import { ja } from 'date-fns/locale';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
+import DeleteMeeting from '@/components/modals/DeleteMeeting';
+import EditMeeting from '@/components/modals/EditMeeting';
 import { MeetingType } from '@/types/others/types';
 import { ToggleMeeting } from '@/utils/api/toggle';
 
@@ -31,11 +33,15 @@ export default function MeetingCard(props: MeetingCardProps) {
         className="mr-6 w-4 h-4 accent-emerald-600 cursor-pointer"
       />
 
-      <div className="flex-1">
+      <div className="flex-1 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <p className="text-sm font-bold text-indigo-600">{props.meeting.companyName}</p>
             <button className="ml-4">{getStatusBadge(props.meeting.status)}</button>
+          </div>
+          <div className='flex space-x-6'>
+            <EditMeeting meeting={props.meeting} />
+            <DeleteMeeting id={props.meeting.id} />
           </div>
         </div>
         <div className="mt-3 sm:flex sm:justify-between text-sm text-gray-500">
@@ -49,11 +55,11 @@ export default function MeetingCard(props: MeetingCardProps) {
           {props.meeting.onlineUrl !== "" && (
             <Link
               href={props.meeting.onlineUrl}
-              className="flex items-center text-sm text-indigo-500 underline"
+              className="flex items-center text-sm mr-3 text-indigo-500 underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              面談・説明会を始める
+              開始する
               <ArrowRight className="h-4 w-4 ml-2" />
             </Link>
           )}

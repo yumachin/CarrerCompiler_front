@@ -3,6 +3,8 @@ import { ja } from 'date-fns/locale';
 import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
+import DeleteInterview from '@/components/modals/DeleteInterview';
+import EditInterview from '@/components/modals/EditInterview';
 import { InterviewType } from '@/types/others/types';
 import { ToggleInterview } from '@/utils/api/toggle';
 
@@ -62,30 +64,37 @@ export default function InterviewCard(props: InterviewCardProps) {
         className="mr-6 w-4 h-4 accent-emerald-600 cursor-pointer"
       />
 
-      <div className="flex-1">
+      <div className="flex-1 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
             <p className="text-sm font-bold text-indigo-600">{props.interview.companyName}</p>
             <button className="ml-4">{getStatusBadge(props.interview.status)}</button>
           </div>
-          {getInterviewTypeBadge(props.interview.selectionId)}
+          <div className='flex space-x-6'>
+            <EditInterview interview={props.interview} />
+            <DeleteInterview id={props.interview.id} />
+          </div>
         </div>
         <div className="mt-3 sm:flex sm:justify-between text-sm text-gray-500">
           <div className="flex space-x-3">
             {props.interview.date !== null &&
               <p>{format(props.interview.date, "yyyy年MM月dd日(E) HH:mm", { locale: ja })}</p>
             }
-            {props.interview.date !== null && props.interview.interviewType !== "" && <p>/</p>}
-            <p>{props.interview.interviewType}</p>
+            {props.interview.date !== null && (props.interview.selectionId !== 0 || props.interview.interviewType !== "")  && <p>/</p>}
+            {props.interview.interviewType !== "" &&
+              <p>{props.interview.interviewType}</p>
+            }
+            {props.interview.selectionId !== 0 && props.interview.interviewType !== "" && <p>/</p>}
+            {getInterviewTypeBadge(props.interview.selectionId)}
           </div>
           {props.interview.onlineUrl !== "" && (
             <Link
               href={props.interview.onlineUrl}
-              className="flex items-center text-sm text-indigo-500 underline"
+              className="flex items-center text-sm mr-3 text-indigo-500 underline"
               target="_blank"
               rel="noopener noreferrer"
             >
-              面接を始める
+              開始する
               <ArrowRight className="h-4 w-4 ml-2" />
             </Link>
           )}
