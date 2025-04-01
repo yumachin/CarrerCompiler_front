@@ -7,7 +7,7 @@ import Setting from "../modals/Setting";
 
 export default function LinkButtons() {
   const { user } = useAuth();
-
+  
   const items = [
     {
       link: "/dashboard",

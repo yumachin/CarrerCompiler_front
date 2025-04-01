@@ -7,6 +7,7 @@ export default function CompanyPage() {
       <Block />
       <main className="space-y-8 p-4 sm:p-8 sm:ml-48 transition-margin duration-200 ease-in-out">
         <h1 className="text-2xl font-bold text-gray-800">企業一覧</h1>
+        <div className='bg-white shadow rounded-lg border divide-y divide-gray-200'></div>
         <CompanyCards />
       </main>
     </div>

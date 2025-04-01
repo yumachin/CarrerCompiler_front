@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { FolderPen, Mail, Settings } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ReactNode, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
@@ -22,8 +22,14 @@ export default function Setting(props: SettingProps) {
   const [email, setEmail] = useState(props.user?.email);
   const router = useRouter();
 
+  useEffect(() => {
+    setName(props.user?.name);
+    setEmail(props.user?.email);
+  }, [props.user]);
+  
   const { register, handleSubmit, formState: { errors } } = useForm<SettingType>({
     mode: 'onSubmit',
+    defaultValues: { name: props.user?.name, email: props.user?.email },
     resolver: zodResolver(SettingValidation)
   });
 

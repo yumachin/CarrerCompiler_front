@@ -1,25 +1,31 @@
 "use client";
 
-import { zodResolver } from '@hookform/resolvers/zod';
-import { Mail, Lock, EyeOffIcon, EyeIcon, FolderPen } from 'lucide-react';
-import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { ReactNode, useState } from 'react';
-import { useForm } from 'react-hook-form';
-import toast from 'react-hot-toast';
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Mail, Lock, EyeOffIcon, EyeIcon, FolderPen } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { ReactNode, useState } from "react";
+import { useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 
-import Header from '@/components/blocks/header/Header';
-import { toastStyle } from '@/styles/toastStyle';
-import { SignUpType } from '@/types/auth/types';
-import { SignUp } from '@/utils/api/auth';
-import { SignUpValidation }  from '@/utils/validations/auth';
+import Header from "@/components/blocks/header/Header";
+import { useAuth } from "@/context/AuthContext";
+import { toastStyle } from "@/styles/toastStyle";
+import { SignUpType } from "@/types/auth/types";
+import { SignUp } from "@/utils/api/auth";
+import { SignUpValidation } from "@/utils/validations/auth";
 
 export default function SignUpPage() {
-  const { register, handleSubmit, formState: { errors } } = useForm<SignUpType>({
-    mode: 'onSubmit',
-    resolver: zodResolver(SignUpValidation)
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SignUpType>({
+    mode: "onSubmit",
+    resolver: zodResolver(SignUpValidation),
   });
   const [showPassword, setShowPassword] = useState<boolean>(false);
+  const { setUser } = useAuth();
   const router = useRouter();
 
   // react-hook-form により、e.preventDefault() は自動で実行される
@@ -28,19 +34,20 @@ export default function SignUpPage() {
 
     try {
       const res = await SignUp(name, email, password);
-      console.log("resは", res)
+      const user = res.data;
       if (res.error) {
         toast.error("そのメールアドレスは既に登録されています。", {
           style: toastStyle,
-          id: loadingToast
+          id: loadingToast,
         });
       } else {
         toast.success("アカウントが作成されました！", {
           duration: 1200,
-          id: loadingToast
+          id: loadingToast,
         });
         setTimeout(() => {
           toast.remove();
+          setUser(user);
           router.push("/dashboard");
         }, 1200);
       }
@@ -71,15 +78,20 @@ export default function SignUpPage() {
                 <input
                   id="name"
                   type="text"
-                  {...register("name")} 
+                  {...register("name")}
                   className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
                 />
-                <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">{errors.name?.message as ReactNode}</p>
+                <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">
+                  {errors.name?.message as ReactNode}
+                </p>
               </div>
             </div>
 
             <div>
-              <label htmlFor="email" className="text-sm font-bold text-gray-700">
+              <label
+                htmlFor="email"
+                className="text-sm font-bold text-gray-700"
+              >
                 メールアドレス
               </label>
               <div className="mt-1 relative">
@@ -89,17 +101,22 @@ export default function SignUpPage() {
                 <input
                   id="email"
                   type="email"
-                  {...register("email")} 
+                  {...register("email")}
                   className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
                   placeholder="carrer@compiler.com"
                   autoComplete="username"
                 />
-                <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">{errors.email?.message as ReactNode}</p>
+                <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">
+                  {errors.email?.message as ReactNode}
+                </p>
               </div>
             </div>
 
             <div>
-              <label htmlFor="password" className="text-sm font-bold text-gray-700">
+              <label
+                htmlFor="password"
+                className="text-sm font-bold text-gray-700"
+              >
                 パスワード
               </label>
               <div className="mt-1 relative">
@@ -114,18 +131,20 @@ export default function SignUpPage() {
                   placeholder="••••••"
                   autoComplete="current-password"
                 />
-                <button 
+                <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)} 
+                  onClick={() => setShowPassword(!showPassword)}
                   className="absolute top-1/3 -translate-y-[50%] right-0 pr-5 text-slate-400"
                 >
                   {showPassword ? (
-                    <EyeOffIcon className='h-5 w-5' />
+                    <EyeOffIcon className="h-5 w-5" />
                   ) : (
-                    <EyeIcon className='h-5 w-5' />
+                    <EyeIcon className="h-5 w-5" />
                   )}
                 </button>
-                <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">{errors.password?.message as ReactNode}</p>
+                <p className="text-red-400 min-h-[1rem] text-xs my-1 ml-2">
+                  {errors.password?.message as ReactNode}
+                </p>
               </div>
             </div>
 
@@ -137,7 +156,10 @@ export default function SignUpPage() {
             </button>
 
             <p className="text-center">
-              <Link href="/signIn" className="text-sm text-emerald-600 underline">
+              <Link
+                href="/signIn"
+                className="text-sm text-emerald-600 underline"
+              >
                 既にアカウントをお持ちですか？
               </Link>
             </p>
@@ -146,4 +168,4 @@ export default function SignUpPage() {
       </div>
     </>
   );
-};
+}

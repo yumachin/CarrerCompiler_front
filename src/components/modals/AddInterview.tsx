@@ -69,7 +69,7 @@ export default function AddInterview() {
       if (!res.error) {
         toast.success("面接の予定を追加しました！", {
           duration: 1200,
-          id: loadingToast,
+          id: loadingToast
         });
         setOpen(false);
         window.location.reload();

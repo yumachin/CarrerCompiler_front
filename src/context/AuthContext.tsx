@@ -1,11 +1,33 @@
 "use client";
 
-import { createContext, useContext, useState, ReactNode, Dispatch, SetStateAction } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  ReactNode,
+  Dispatch,
+  SetStateAction,
+  useEffect,
+} from "react";
+
+import { GetUser } from "@/utils/api/user";
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<UserType | null>(null);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const res = await GetUser();
+        setUser(res);
+      } catch {
+        setUser(null);
+      }
+    };
+    fetchUser();
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, setUser }}>
