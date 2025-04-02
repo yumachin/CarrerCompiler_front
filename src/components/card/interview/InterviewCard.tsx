@@ -67,7 +67,7 @@ export default function InterviewCard(props: InterviewCardProps) {
       <div className="flex-1 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <p className="text-sm font-bold text-indigo-600">{props.interview.companyName}</p>
+            <Link href={`/company/${props.interview.companyId}`} className="text-sm font-bold text-indigo-600">{props.interview.companyName}</Link>
             <button className="ml-4">{getStatusBadge(props.interview.status)}</button>
           </div>
           <div className='flex space-x-6'>

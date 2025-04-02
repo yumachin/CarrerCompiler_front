@@ -17,12 +17,12 @@ export default function LinkButtons() {
     {
       link: "/submission",
       icon: FileText,
-      name: "提出物"
+      name: "提出物 / タスク"
     },
     {
       link: "/meeting",
       icon: Calendar,
-      name: "面談"
+      name: "面談 / 説明会"
     },
     {
       link: "/interview",
@@ -32,7 +32,7 @@ export default function LinkButtons() {
     {
       link: "/company",
       icon: Building2,
-      name: "企業"
+      name: "企業情報"
     }
   ];
 
@@ -42,8 +42,8 @@ export default function LinkButtons() {
         {
           items.map((item, index) => (
             <li key={index}>
-              <Link href={item.link} className="flex items-center px-5 py-6 text-gray-100 font-bold gap-3">
-                <item.icon />
+              <Link href={item.link} className="flex items-center px-4 py-6 text-sm text-gray-100 font-bold gap-3">
+                <item.icon className="w-5 h-5" />
                 <span>{item.name}</span>
               </Link>
             </li>

@@ -36,7 +36,7 @@ export default function MeetingCard(props: MeetingCardProps) {
       <div className="flex-1 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <p className="text-sm font-bold text-indigo-600">{props.meeting.companyName}</p>
+            <Link href={`/company/${props.meeting.companyId}`} className="text-sm font-bold text-indigo-600">{props.meeting.companyName}</Link>
             <button className="ml-4">{getStatusBadge(props.meeting.status)}</button>
           </div>
           <div className='flex space-x-6'>

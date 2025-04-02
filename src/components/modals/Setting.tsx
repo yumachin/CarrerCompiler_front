@@ -81,9 +81,9 @@ export default function Setting(props: SettingProps) {
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <div className="flex items-center px-5 py-8 text-gray-100 font-bold gap-3 cursor-pointer">
-            <Settings />
-            設定
+          <div className="flex items-center px-5 py-8 text-sm text-gray-100 font-bold gap-3 cursor-pointer">
+            <Settings className="w-5 h-5" />
+            その他設定
           </div>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px] bg-white">

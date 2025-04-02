@@ -7,7 +7,7 @@ export default function CountCard(props: CountCardProps) {
       {props.icon}
       <div className="ml-5">
         <div className="text-sm font-bold text-gray-500">{props.name}</div>
-        <div className="text-2xl font-bold text-gray-700">15</div>
+        <div className="text-2xl font-bold text-gray-700">{props.count}</div>
       </div>
     </Link>
   );
@@ -17,4 +17,5 @@ type CountCardProps = {
   link: string;
   icon: ReactNode;
   name: string;
+  count: number;
 };

@@ -72,7 +72,7 @@ export default function SubmissionCard(props: SubmissionCardProps) {
       <div className="flex-1 space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            <p className="text-sm font-bold text-indigo-600">{props.submission.companyName}</p>
+            <Link href={`/company/${props.submission.companyId}`} className="text-sm font-bold text-indigo-600">{props.submission.companyName}</Link>
             <button className="ml-4">{getStatusBadge(props.submission.status)}</button>
           </div>
           <div className='flex space-x-6'>
