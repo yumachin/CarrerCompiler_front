@@ -116,7 +116,7 @@ export default function EditSubmission(props: EditSubmissionProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="px-2 py-0.5 text-sm rounded-sm shadow-md bg-emerald-500 text-white">
+        <button className="px-2 py-0.5 text-sm rounded-sm shadow-md bg-emerald-600 text-white">
           編集
         </button>
       </DialogTrigger>

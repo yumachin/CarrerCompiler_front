@@ -17,6 +17,23 @@ export const GetCompanies = async () => {
   }
 };
 
+export const GetCompany = async (id: string) => {
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/companies/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      credentials: 'include'
+    });
+    const data = await res.json();
+    return camelcaseKeys(data, { deep: true });
+  } catch (error) {
+    console.error(error);
+    throw new Error('会社の取得に失敗');
+  }
+};
+
 export const PostCompany = async (name: string) => {
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/companies`, {
@@ -37,20 +54,21 @@ export const PostCompany = async (name: string) => {
   }
 };
 
-export const UpdateCompany = async (id: number, name: string) => {
+export const UpdateCompany = async (id: number, name: string, industry?: number, employees?: number | string, website?: string, address?: string, income?: number | string, holidays?: number | string, workingHours?: string, other?: string) => {
+
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/companies/${id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({company: { name }}),
+      body: JSON.stringify({company: { name, industry, employees: employees !== "" ? Number(employees) : 0, website, address, income: income !== "" ? Number(income) : 0, holidays: holidays !== "" ? Number(holidays) : 0, workingHours, other }}),
       credentials: 'include'
     });
     const data = await res.json();
     return data;
   } catch (error) {
     console.error(error);
-    throw new Error('会社名の編集に失敗');
+    throw new Error('会社情報の編集に失敗');
   }
 };

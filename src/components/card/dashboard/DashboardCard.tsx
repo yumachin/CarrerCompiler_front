@@ -45,6 +45,7 @@ export default async function DashboardCard(props: DashboardCardProps) {
 
   let dashboardContents;
   try {
+    
     dashboardContents = await GetDashboardData();
   } catch (error) {
     console.error(error);
@@ -100,7 +101,7 @@ export default async function DashboardCard(props: DashboardCardProps) {
                   {getSubmissionTypeBadge(submission.submissionType)}
                 </Link>
                 <p className="text-xs text-gray-500">
-                {submission.companyName} - {submission.deadline !== null &&
+                {submission.companyName} --- {submission.deadline !== null &&
                   <>{format(submission.deadline, "yyyy年MM月dd日(E) HH:mm", { locale: ja })}</>
                 }
                 </p>

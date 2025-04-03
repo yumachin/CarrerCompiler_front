@@ -32,4 +32,4 @@ export const GetDashboardData = async () => {
     console.error(error);
     throw new Error('ダッシュボードデータの取得に失敗');
   }
-}
+};

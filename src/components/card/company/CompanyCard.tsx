@@ -1,4 +1,3 @@
-import { Building2 } from "lucide-react";
 import Link from "next/link";
 
 import getIndustrialBadge from "@/components/budge/Industrial";
@@ -13,9 +12,13 @@ export default function CompanyCard(props:CompanyCardProps) {
             <h3 className="text-gray-900 text-sm font-bold">{props.company.name}</h3>
             {getIndustrialBadge(props.company.industry)}
           </div>
-          <p className="mt-1 text-gray-500 text-sm">{props.company.address}</p>
+          {props.company.address ? (
+            <p className="mt-2 text-gray-500 text-xs">{props.company.address}</p>
+          ) : (
+            <p className="mt-2 text-gray-500 text-xs">所在地が設定されていません</p>
+          )}
         </div>
-        <Building2 className="w-10 h-10 text-gray-400" />
+        
       </div>
       <Link href={`company/${props.company.id}`} className="flex items-center justify-center py-4 text-sm text-gray-700 font-bold">
         詳細を見る

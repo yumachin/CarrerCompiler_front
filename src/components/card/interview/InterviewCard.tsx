@@ -101,7 +101,6 @@ export default function InterviewCard(props: InterviewCardProps) {
         </div>
       </div>
     </li>
-
   );
 };
 
