@@ -1,6 +1,6 @@
+import camelcaseKeys from "camelcase-keys";
 import { Building2, Calendar, FileText } from "lucide-react";
-
-import { GetCounts } from "@/utils/api/dashboard";
+import { cookies } from "next/headers";
 
 import CountCard from "./CountCard";
 
@@ -8,7 +8,6 @@ export default async function CountCards() {
   let tableCounts;
   try {
     tableCounts = await GetCounts();
-    // console.log("APIのレスは:", tableCounts);
   } catch (error) {
     console.error(error);
   }
@@ -18,26 +17,26 @@ export default async function CountCards() {
       link: "/submission",
       icon: FileText,
       name: "提出物",
-      count: tableCounts.submissionCount
+      count: tableCounts.submissionCount,
     },
     {
       link: "/meeting",
       icon: Calendar,
       name: "面談",
-      count: tableCounts.meetingCount
+      count: tableCounts.meetingCount,
     },
     {
       link: "/interview",
       icon: Calendar,
       name: "面接",
-      count: tableCounts.interviewCount
+      count: tableCounts.interviewCount,
     },
     {
       link: "/company",
       icon: Building2,
       name: "企業",
-      count: tableCounts.companyCount
-    }
+      count: tableCounts.companyCount,
+    },
   ];
 
   return (
@@ -53,4 +52,30 @@ export default async function CountCards() {
       ))}
     </div>
   );
+}
+
+export const GetCounts = async () => {
+  const cookieStore = await cookies();
+  const accessToken = cookieStore.get('access-token')?.value;
+  const client = cookieStore.get('client')?.value;
+  const email = cookieStore.get('email')?.value;
+  const uid = cookieStore.get('uid')?.value;
+
+  try {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/counts`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        "access-token": accessToken || "",
+        "client": client || "",
+        "email": email || "",
+        "uid": uid || ""
+      }
+    });
+    const data = await res.json();
+    return camelcaseKeys(data, { deep: true });
+  } catch (error) {
+    console.error(error);
+    throw new Error("各テーブル数の取得に失敗");
+  }
 };

@@ -71,3 +71,23 @@ export const UpdateCompany = async (id: number, name: string, industry?: number,
     throw new Error('会社情報の編集に失敗');
   }
 };
+
+export const UpdateCompanyMemo = async (id: number, memo: string) => {
+  try {
+    console.log("idは", id);
+    console.log("memoは", memo);
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/companies/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({company: { memo }}),
+      credentials: 'include'
+    });
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw new Error('会社メモの編集に失敗');
+  }
+};

@@ -72,7 +72,7 @@ export default function CompanyDetailPage({ params }: { params: PageParams } ) {
       <Block />
       <main className="space-y-8 p-4 sm:p-8 sm:ml-40 transition-margin duration-200 ease-in-out">
         {company && <CompanyInfCard company={company} />}
-        {company && <CompanyMemoCard memo={company.memo} />}
+        {company && <CompanyMemoCard id={company.id} memo={company.memo} />}
       </main>
     </div>
   );

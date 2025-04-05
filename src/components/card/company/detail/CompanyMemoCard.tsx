@@ -1,18 +1,24 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useRef, useState } from "react";
+import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import Slider from "react-slick";
 import rehypeHighlight from "rehype-highlight";
 import remarkGfm from "remark-gfm";
-import "slick-carousel/slick/slick.css";
+
+import { toastStyle } from "@/styles/toastStyle";
+import { UpdateCompanyMemo } from "@/utils/api/company";
 
 import "highlight.js/styles/github.css";
+import "slick-carousel/slick/slick.css";
 
 export default function CompanyMemoCard(props: CompanyMemoCardProps) {
   const sliderRef = useRef<Slider | null>(null);
   const [buttonState, setButtonState] = useState<number>(0);
   const [memo, setMemo] = useState<string>(props.memo || "");
+  const router = useRouter();
 
   const settings = {
     dots: false,
@@ -38,8 +44,42 @@ export default function CompanyMemoCard(props: CompanyMemoCardProps) {
     sliderRef.current?.slickNext();
   };
 
-  const handleSave = () => {
-
+  const handleSave = async () => {
+    toast.dismiss();
+    const loadingToast = toast.loading("編集中です...");
+    try {
+      const res = await UpdateCompanyMemo(props.id, memo);
+      if (!res.error) {
+        toast.success("会社メモの編集に成功しました！", {
+          duration: 1200,
+          id: loadingToast,
+        });
+        window.location.reload();
+      } else {
+        if (res.error === "トークン切れ") {
+          toast.error("アクセス権がありません。ログインしなおしてください。", {
+            style: toastStyle,
+            duration: 1200,
+            id: loadingToast,
+          });
+        } else {
+          toast.error(
+            "ユーザーが見つかりません。ログインしなおしてください。",
+            {
+              style: toastStyle,
+              duration: 1200,
+              id: loadingToast,
+            }
+          );
+        }
+        router.push("/signIn");
+      }
+    } catch (error) {
+      console.error("会社メモ編集エラー", error);
+      toast.error("会社メモの編集に失敗しました。", {
+        id: loadingToast,
+      });
+    }
   };
 
   return (
@@ -70,13 +110,13 @@ export default function CompanyMemoCard(props: CompanyMemoCardProps) {
             rehypePlugins={[rehypeHighlight]}
             components={{
               pre(props) {
-                const {...rest} = props
-                return <pre className="bg-white border" {...rest} />
+                const { ...rest } = props;
+                return <pre className="bg-white border" {...rest} />;
               },
               a(props) {
-                const {...rest} = props
-                return <a className="text-sm text-indigo-600" {...rest} />
-              }
+                const { ...rest } = props;
+                return <a className="text-sm text-indigo-600" {...rest} />;
+              },
             }}
           >
             {memo}
@@ -105,5 +145,6 @@ export default function CompanyMemoCard(props: CompanyMemoCardProps) {
 }
 
 type CompanyMemoCardProps = {
+  id: number;
   memo: string;
 };
