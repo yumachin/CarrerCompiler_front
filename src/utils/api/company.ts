@@ -55,7 +55,6 @@ export const PostCompany = async (name: string) => {
 };
 
 export const UpdateCompany = async (id: number, name: string, industry?: number, employees?: number | string, website?: string, address?: string, income?: number | string, holidays?: number | string, workingHours?: string, other?: string) => {
-
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/companies/${id}`, {
       method: 'PUT',

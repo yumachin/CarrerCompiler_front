@@ -35,7 +35,6 @@ export default function CompanyDetailPage({ params }: { params: PageParams } ) {
       toast.dismiss();
       try {
         const res = await GetCompany(id);
-        console.log("resは", res);
         if (!res.error) {
           setCompany(res);
         } else {
@@ -68,14 +67,12 @@ export default function CompanyDetailPage({ params }: { params: PageParams } ) {
     fetchCompany();
   }, [id, router]);
 
-  console.log("companyとは", company);
-
   return (
     <div className="min-h-screen bg-emerald-50 pb-12">
       <Block />
       <main className="space-y-8 p-4 sm:p-8 sm:ml-40 transition-margin duration-200 ease-in-out">
         {company && <CompanyInfCard company={company} />}
-        <CompanyMemoCard />
+        {company && <CompanyMemoCard memo={company.memo} />}
       </main>
     </div>
   );
@@ -84,7 +81,6 @@ export default function CompanyDetailPage({ params }: { params: PageParams } ) {
 type PageParams = Promise<{
   id: string
 }>;
-
 
 type TempProps = {
   id: number;
@@ -100,6 +96,7 @@ type TempProps = {
   // selectionFlow: string[];
   other: string;
   favorite: boolean;
+  memo: string;
   created_at: string;
   updated_at: string;
 };

@@ -12,6 +12,7 @@ export type CompanyType = {
   selectionFlow: string;
   other:         string;
   favorite:      boolean;
+  memo:          string;
 };
 
 export type InterviewType = {

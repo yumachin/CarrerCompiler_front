@@ -1,15 +1,19 @@
 "use client";
 
-import { useRef, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import Slider from 'react-slick';
-import remarkGfm from 'remark-gfm';
+import { useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import Slider from "react-slick";
+import rehypeHighlight from "rehype-highlight";
+import remarkGfm from "remark-gfm";
 import "slick-carousel/slick/slick.css";
 
-export default function CompanyMemoCard() {
+import "highlight.js/styles/github.css";
+
+export default function CompanyMemoCard(props: CompanyMemoCardProps) {
   const sliderRef = useRef<Slider | null>(null);
   const [buttonState, setButtonState] = useState<number>(0);
-  
+  const [memo, setMemo] = useState<string>(props.memo || "");
+
   const settings = {
     dots: false,
     infinite: false,
@@ -21,51 +25,76 @@ export default function CompanyMemoCard() {
       } else {
         setButtonState(1);
       }
-    }
+    },
   };
-  
+
   const handleView = () => {
     setButtonState(0);
-    sliderRef.current?.slickPrev(); 
+    sliderRef.current?.slickPrev();
   };
 
   const handleEdit = () => {
     setButtonState(1);
     sliderRef.current?.slickNext();
   };
-  
+
+  const handleSave = () => {
+
+  };
+
   return (
     <div className="bg-white shadow rounded-lg p-5">
       <h3 className="ml-2 text-lg font-bold text-gray-800">会社概要メモ</h3>
       <div className="flex border-b border-gray-200">
-        <button 
-          className={`flex-1 py-3 font-bold text-center ${buttonState === 0 ? "text-emerald-700" : "text-gray-400"}`}
+        <button
+          className={`flex-1 py-3 font-bold text-center ${
+            buttonState === 0 ? "text-emerald-700" : "text-gray-400"
+          }`}
           onClick={handleView}
         >
           プレビュー
         </button>
-        <button 
-          className={`flex-1 py-3 font-bold text-center ${buttonState === 1 ? "text-emerald-700" : "text-gray-400"}`}
+        <button
+          className={`flex-1 py-3 font-bold text-center ${
+            buttonState === 1 ? "text-emerald-700" : "text-gray-400"
+          }`}
           onClick={handleEdit}
         >
           編集
         </button>
       </div>
-      <Slider 
-        {...settings} 
-        ref={sliderRef}
-      >
-        <div className="p-4 break-all">
-          <ReactMarkdown remarkPlugins={[remarkGfm]}></ReactMarkdown>
+      <Slider {...settings} ref={sliderRef}>
+        <div className="p-4 prose break-all">
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm]}
+            rehypePlugins={[rehypeHighlight]}
+            components={{
+              pre(props) {
+                const {...rest} = props
+                return <pre className="bg-white border" {...rest} />
+              },
+              a(props) {
+                const {...rest} = props
+                return <a className="text-sm text-indigo-600" {...rest} />
+              }
+            }}
+          >
+            {memo}
+          </ReactMarkdown>
         </div>
-        <div className='px-4 pt-4 space-y-6'>
+        <div className="px-4 pt-4 space-y-6">
           <textarea
             rows={20}
-            className="shadow w-full p-3 text-sm border rounded-lg"
+            className="shadow w-full p-4 text-sm border rounded-lg"
             placeholder="マークダウンで入力"
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
           />
-          <div className='flex justify-end'>
-            <button className="mr-4 px-4 py-2 text-sm font-bold rounded-lg shadow text-white bg-emerald-600">
+          <div className="flex justify-end">
+            <button
+              className="mr-4 px-4 py-2 text-sm font-bold rounded-lg shadow text-white bg-emerald-600"
+              onClick={handleSave}
+            >
               保存
             </button>
           </div>
@@ -73,4 +102,8 @@ export default function CompanyMemoCard() {
       </Slider>
     </div>
   );
+}
+
+type CompanyMemoCardProps = {
+  memo: string;
 };
