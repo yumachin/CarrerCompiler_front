@@ -30,12 +30,16 @@ export default function SignOutPage({ confirm, setConfirm }: SignOutProps) {
           <DialogDescription className="ml-4">本当にログアウトしますか？</DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={() => setConfirm(false)}>
+          <Button 
+            variant="outline" 
+            onClick={() => setConfirm(false)}
+            className="font-bold cursor-pointer"
+          >
             キャンセル
           </Button>
           <Button 
             onClick={handleSignOut} 
-            className="bg-red-500 cursor-pointer"
+            className="bg-red-500 font-bold cursor-pointer"
           >
             ログアウト
           </Button>
