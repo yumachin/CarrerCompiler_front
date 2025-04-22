@@ -7,30 +7,42 @@ import { ReactNode, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 
+import { useAuth } from "@/context/AuthContext";
 import { toastStyle } from "@/styles/toastStyle";
 import { SettingType } from "@/types/setting/types";
 import { EditUserProfile } from "@/utils/api/user";
 import { SettingValidation } from "@/utils/validations/setting";
 
 import SignOut from "./SignOut";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
-export default function Setting(props: SettingProps) {
+export default function Setting() {
+  const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [confirm, setConfirm] = useState(false);
-  const [name, setName] = useState(props.user?.name);
-  const [email, setEmail] = useState(props.user?.email);
+  const [name, setName] = useState(user?.name);
+  const [email, setEmail] = useState(user?.email);
   const router = useRouter();
 
   useEffect(() => {
-    setName(props.user?.name);
-    setEmail(props.user?.email);
-  }, [props.user]);
-  
-  const { register, handleSubmit, formState: { errors } } = useForm<SettingType>({
-    mode: 'onSubmit',
-    defaultValues: { name: props.user?.name, email: props.user?.email },
-    resolver: zodResolver(SettingValidation)
+    setName(user?.name);
+    setEmail(user?.email);
+  }, [user]);
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<SettingType>({
+    mode: "onSubmit",
+    defaultValues: { name: user?.name, email: user?.email },
+    resolver: zodResolver(SettingValidation),
   });
 
   const formSubmit = async ({ name, email }: SettingType) => {
@@ -42,7 +54,7 @@ export default function Setting(props: SettingProps) {
       if (!res.error) {
         toast.success("ユーザー情報を更新しました！", {
           duration: 1200,
-          id: loadingToast
+          id: loadingToast,
         });
         setTimeout(() => {
           toast.remove();
@@ -52,7 +64,7 @@ export default function Setting(props: SettingProps) {
         toast.error("アクセス権がありません。ログインしなおしてください。", {
           style: toastStyle,
           duration: 1200,
-          id: loadingToast
+          id: loadingToast,
         });
         setTimeout(() => {
           toast.remove();
@@ -63,7 +75,7 @@ export default function Setting(props: SettingProps) {
         toast.error("ユーザーが見つかりません。ログインしなおしてください。", {
           style: toastStyle,
           duration: 1200,
-          id: loadingToast
+          id: loadingToast,
         });
         setTimeout(() => {
           toast.remove();
@@ -93,7 +105,10 @@ export default function Setting(props: SettingProps) {
             </DialogHeader>
             <form onSubmit={handleSubmit(formSubmit)}>
               <div>
-                <label htmlFor="name" className="text-sm font-bold text-gray-700">
+                <label
+                  htmlFor="name"
+                  className="text-sm font-bold text-gray-700"
+                >
                   名前
                 </label>
                 <div className="mt-1 relative">
@@ -108,11 +123,16 @@ export default function Setting(props: SettingProps) {
                     value={name}
                     onChange={(e) => setName(e.target.value)}
                   />
-                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">{errors.name?.message as ReactNode}</p>
+                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
+                    {errors.name?.message as ReactNode}
+                  </p>
                 </div>
               </div>
               <div>
-                <label htmlFor="email" className="text-sm font-bold text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-bold text-gray-700"
+                >
                   メールアドレス
                 </label>
                 <div className="mt-1 relative">
@@ -122,14 +142,16 @@ export default function Setting(props: SettingProps) {
                   <input
                     id="email"
                     type="email"
-                    {...register("email")} 
+                    {...register("email")}
                     className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
                     placeholder="carrer@compiler.com"
                     autoComplete="username"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                   />
-                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">{errors.email?.message as ReactNode}</p>
+                  <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
+                    {errors.email?.message as ReactNode}
+                  </p>
                 </div>
               </div>
               <button
@@ -160,16 +182,4 @@ export default function Setting(props: SettingProps) {
       </Dialog>
     </>
   );
-};
-
-type SettingProps = {
-  user: UserType | null;
-};
-
-type UserType = {
-  id: number;
-  name: string;
-  email: string;
-  created_at: string;
-  updated_at: string;
 }

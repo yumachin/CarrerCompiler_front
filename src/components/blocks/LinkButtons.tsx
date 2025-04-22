@@ -1,13 +1,9 @@
 import { Building2, Calendar, FileText } from "lucide-react";
 import Link from "next/link";
 
-import { useAuth } from "@/context/AuthContext";
-
 import Setting from "../modals/Setting";
 
 export default function LinkButtons() {
-  const { user } = useAuth();
-  
   const items = [
     {
       link: "/dashboard",
@@ -50,7 +46,7 @@ export default function LinkButtons() {
           ))
         }
       </ul>
-      <Setting user={user} />
+      <Setting />
     </div>
   );
 };

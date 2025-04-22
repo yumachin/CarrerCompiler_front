@@ -1,14 +1,14 @@
 "use client";
 
-import { MenuIcon } from "lucide-react";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 
-import CareerCompilerLogo from "../../../../public/CareerCompilerLogo.jpg";
+import { assets } from "@/assets/assets";
 
-export default function Header(props: HeaderProps) {
+export default function Header() {
   const router = useRouter();
   const pathname = usePathname();
+  const CareerCompilerLogo = assets.CareerCompilerLogo.src;
 
   const handleClick = () => {
     if (pathname === "/signUp" || pathname === "/signIn") {
@@ -20,29 +20,19 @@ export default function Header(props: HeaderProps) {
 
   return (
     <nav className="bg-emerald-900 shadow-sm fixed w-full z-10">
-      <div className="flex-shrink-0 flex items-center text-white h-20 px-2 sm:px-8">
-        <button
-          onClick={(prev) => props.setOpen && props.setOpen(!prev)}
-          className="text-white sm:hidden"
-        >
-          <MenuIcon />
-        </button>
-        <div
-          onClick={handleClick}
-          className="flex items-center cursor-pointer max-w-xs"
-        >
-          <Image
-            src={CareerCompilerLogo}
-            alt="Career Compiler"
-            style={{ width: "auto", height: "auto" }}
-            priority
-          />
-        </div>
+      <div
+        onClick={handleClick}
+        className="flex items-center cursor-pointer max-w-xs h-20 px-4"
+      >
+        <Image
+          src={CareerCompilerLogo}
+          alt="Career Compiler"
+          width={200}
+          height={200}
+          style={{ width: "auto", height: "auto" }}
+          priority
+        />
       </div>
     </nav>
   );
 }
-
-type HeaderProps = {
-  setOpen?: (prev: boolean) => void;
-};
