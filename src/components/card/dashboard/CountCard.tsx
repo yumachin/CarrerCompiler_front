@@ -7,7 +7,7 @@ export default function CountCard(props: CountCardProps) {
       {props.icon}
       <div className="ml-5">
         <div className="text-sm font-bold text-gray-500">{props.name}</div>
-        <div className="text-2xl font-bold text-gray-700">{props.count}</div>
+        <div className="text-2xl font-medium text-gray-700">{props.count ? props.count : 0}</div>
       </div>
     </Link>
   );
