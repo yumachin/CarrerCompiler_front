@@ -18,6 +18,8 @@ export default async function DashboardCard(props: DashboardCardProps) {
     console.error(error);
   }
 
+  console.log("aaaaaaaa", dashboardContents);
+
   const getSubmissionTypeBadge = (submissionType: number) => {
     switch (submissionType) {
       case 1:
@@ -42,7 +44,8 @@ export default async function DashboardCard(props: DashboardCardProps) {
       <h3 className="text-md font-bold text-gray-700">{props.title}</h3>
       <ul className="-my-4 divide-y divide-gray-200 mt-1">
         {props.id === 0
-          ? dashboardContents.meetings.map(
+          ? dashboardContents.meetings === 0
+            ? dashboardContents.meetings.map(
               (meeting: MeetingType, index: number) => (
                 <li key={index} className="flex items-center justify-between">
                   <div className="flex flex-col justify-center py-4">
@@ -71,68 +74,74 @@ export default async function DashboardCard(props: DashboardCardProps) {
                 </li>
               )
             )
+            : <li className="ml-2 py-4 text-xs text-gray-500">面談・説明会はありません</li>
           : props.id === 1
-          ? dashboardContents.interviews.map(
-              (interview: InterviewType, index: number) => (
-                <li key={index} className="flex items-center justify-between">
-                  <div className="flex flex-col justify-center py-4">
+            ? dashboardContents.interviews === 0
+              ? dashboardContents.interviews?.map(
+                (interview: InterviewType, index: number) => (
+                  <li key={index} className="flex items-center justify-between">
+                    <div className="flex flex-col justify-center py-4">
+                      <Link
+                        href={`company/${interview.companyId}`}
+                        className="mb-1 text-sm font-bold text-indigo-600"
+                      >
+                        {interview.companyName}
+                      </Link>
+                      <p className="text-xs text-gray-500">
+                        {interview.date !== null && (
+                          <>
+                            {format(interview.date, "yyyy年MM月dd日(E) HH:mm", {
+                              locale: ja,
+                            })}
+                          </>
+                        )}
+                      </p>
+                    </div>
                     <Link
-                      href={`company/${interview.companyId}`}
-                      className="mb-1 text-sm font-bold text-indigo-600"
+                      href={interview.onlineUrl}
+                      className="mr-2 text-xs text-indigo-500 underline"
                     >
-                      {interview.companyName}
+                      開始する
                     </Link>
-                    <p className="text-xs text-gray-500">
-                      {interview.date !== null && (
-                        <>
-                          {format(interview.date, "yyyy年MM月dd日(E) HH:mm", {
-                            locale: ja,
-                          })}
-                        </>
-                      )}
-                    </p>
-                  </div>
-                  <Link
-                    href={interview.onlineUrl}
-                    className="mr-2 text-xs text-indigo-500 underline"
-                  >
-                    開始する
-                  </Link>
-                </li>
+                  </li>
+                )
               )
-            )
-          : dashboardContents.submissions.map(
-              (submission: SubmissionType, index: number) => (
-                <li key={index} className="flex items-center justify-between">
-                  <div className="flex flex-col justify-center py-4">
+            : <li className="ml-2 py-4 text-xs text-gray-500">面接はありません</li>
+          : dashboardContents.submissions === 0
+            ? dashboardContents.submissions?.map(
+                (submission: SubmissionType, index: number) => (
+                  <li key={index} className="flex items-center justify-between">
+                    <div className="flex flex-col justify-center py-4">
+                      <Link
+                        href={`company/${submission.companyId}`}
+                        className="mb-1 text-sm font-bold text-gray-700"
+                      >
+                        {getSubmissionTypeBadge(submission.submissionType)}
+                      </Link>
+                      <p className="text-xs text-gray-500">
+                        {submission.companyName} ---{" "}
+                        {submission.deadline !== null && (
+                          <>
+                            {format(
+                              submission.deadline,
+                              "yyyy年MM月dd日(E) HH:mm",
+                              { locale: ja }
+                            )}
+                          </>
+                        )}
+                      </p>
+                    </div>
                     <Link
-                      href={`company/${submission.companyId}`}
-                      className="mb-1 text-sm font-bold text-gray-700"
+                      href={submission.submissionUrl}
+                      className="mr-2 text-xs text-indigo-500 underline"
                     >
-                      {getSubmissionTypeBadge(submission.submissionType)}
+                      提出する
                     </Link>
-                    <p className="text-xs text-gray-500">
-                      {submission.companyName} ---{" "}
-                      {submission.deadline !== null && (
-                        <>
-                          {format(
-                            submission.deadline,
-                            "yyyy年MM月dd日(E) HH:mm",
-                            { locale: ja }
-                          )}
-                        </>
-                      )}
-                    </p>
-                  </div>
-                  <Link
-                    href={submission.submissionUrl}
-                    className="mr-2 text-xs text-indigo-500 underline"
-                  >
-                    提出する
-                  </Link>
-                </li>
+                  </li>
+                )
               )
-            )}
+            : <li className="ml-2 py-4 text-xs text-gray-500">提出物・タスクはありません</li>
+        }
       </ul>
     </div>
   );
