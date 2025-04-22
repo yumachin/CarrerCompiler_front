@@ -113,7 +113,7 @@ export default function EditInterview(props: EditInterviewProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="px-2 py-0.5 text-sm rounded-sm shadow-md bg-emerald-600 text-white">
+        <button className="px-2 py-0.5 text-sm rounded-sm shadow-md bg-emerald-600">
           編集
         </button>
       </DialogTrigger>
