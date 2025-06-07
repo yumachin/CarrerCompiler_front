@@ -1,0 +1,16 @@
+{
+  "name": "Career Compiler",
+  "short_name": "Career Compiler",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#047857",
+  "theme_color": "#047857",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/CareerCompiler-logo.png",
+      "sizes": "371x371",
+      "type": "image/png"
+    }
+  ]
+}
