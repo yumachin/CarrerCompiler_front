@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import Block from '@/components/blocks/Block';
 import CountCards from '@/components/card/dashboard/CountCards';
 import DashboardCards from '@/components/card/dashboard/DashboardCards';
