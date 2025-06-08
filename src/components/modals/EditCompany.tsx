@@ -133,7 +133,7 @@ export default function EditCompany(props: EditCompanyProps){
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button variant={"outline"} className="mr-8 text-white hover:text-white bg-emerald-600 hover:bg-emerald-700">編集</Button> 
+        <Button variant={"outline"} className="mr-8 text-white font-bold hover:text-white bg-emerald-600 hover:bg-emerald-700">編集</Button> 
       </DialogTrigger>
       <DialogContent
         className="sm:max-w-[800px] bg-white"

@@ -47,10 +47,13 @@ export default function MeetingCards() {
   }, [router]);
 
   return (
-    <ul className="bg-white shadow rounded-lg border divide-y divide-gray-200">
-      {meetings.map((meeting) => (
-        <MeetingCard key={meeting.id} meeting={meeting} />
-      ))}
-    </ul>
+    <>
+      {meetings.length === 0 && <div className="ml-2">面談・説明会の予定はありません。</div> }
+      <ul className="bg-white shadow-lg rounded-lg divide-y divide-gray-200">
+        {meetings.map((meeting) => (
+          <MeetingCard key={meeting.id} meeting={meeting} />
+        ))}
+      </ul>
+    </>
   );
 };

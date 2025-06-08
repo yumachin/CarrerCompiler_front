@@ -14,11 +14,10 @@ export default async function DashboardCard(props: DashboardCardProps) {
   let dashboardContents;
   try {
     dashboardContents = await GetDashboardData();
+    console.log("Dashboard Contents:", dashboardContents);
   } catch (error) {
     console.error(error);
   }
-
-  console.log("aaaaaaaa", dashboardContents);
 
   const getSubmissionTypeBadge = (submissionType: number) => {
     switch (submissionType) {
@@ -44,7 +43,7 @@ export default async function DashboardCard(props: DashboardCardProps) {
       <h3 className="text-md font-bold text-gray-700">{props.title}</h3>
       <ul className="-my-4 divide-y divide-gray-200 mt-1">
         {props.id === 0
-          ? dashboardContents.meetings === 0
+          ? dashboardContents.meetings.length !== 0
             ? dashboardContents.meetings.map(
               (meeting: MeetingType, index: number) => (
                 <li key={index} className="flex items-center justify-between">
@@ -76,7 +75,7 @@ export default async function DashboardCard(props: DashboardCardProps) {
             )
             : <li className="ml-2 py-4 text-xs text-gray-500">面談・説明会はありません</li>
           : props.id === 1
-            ? dashboardContents.interviews === 0
+            ? dashboardContents.interviews.length !== 0
               ? dashboardContents.interviews?.map(
                 (interview: InterviewType, index: number) => (
                   <li key={index} className="flex items-center justify-between">
@@ -107,7 +106,7 @@ export default async function DashboardCard(props: DashboardCardProps) {
                 )
               )
             : <li className="ml-2 py-4 text-xs text-gray-500">面接はありません</li>
-          : dashboardContents.submissions === 0
+          : dashboardContents.submissions.length !== 0
             ? dashboardContents.submissions?.map(
                 (submission: SubmissionType, index: number) => (
                   <li key={index} className="flex items-center justify-between">

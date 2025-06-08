@@ -46,10 +46,13 @@ export default function SubmissionCards() {
   }, [router]);
 
   return (
-    <ul className="bg-white shadow rounded-lg border divide-y divide-gray-200">
-      {submissions.map((submission) => (
-        <SubmissionCard key={submission.id} submission={submission} />
-      ))}
-    </ul>
+    <>
+      {submissions.length === 0 && <div className="ml-2">提出物・タスクはありません。</div>}
+      <ul className="bg-white shadow-lg rounded-lg divide-y divide-gray-200">
+        {submissions.map((submission) => (
+          <SubmissionCard key={submission.id} submission={submission} />
+        ))}
+      </ul>
+    </>
   );
 }

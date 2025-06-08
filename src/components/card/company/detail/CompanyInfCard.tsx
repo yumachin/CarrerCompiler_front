@@ -4,18 +4,6 @@ import Link from 'next/link';
 import getIndustrialBadge from '@/components/budge/Industrial';
 import EditCompany from '@/components/modals/EditCompany';
 
-// const SelectionFlow = (props: SelectionFlowProps) => (
-//   <div className="flex items-center space-x-4 mt-1 ml-2 text-sm text-gray-800">
-//     {props.flow.length > 0 && props.flow.map((selection, index) => (
-//       <div className="flex items-center" key={index}>
-//         <span className="w-7 h-7 flex items-center justify-center rounded-full bg-emerald-50 text-emerald-600">{index + 1}</span>
-//         <span className="ml-2">{selection}</span>
-//         {index < (props.flow.length - 1) && <span className="text-gray-300 ml-4">→</span>}
-//       </div>
-//     ))}
-//   </div>
-// );
-
 export default function CompanyInfCard(props: CompanyCardProps) {
   return (
     <div className="bg-white shadow rounded-lg">
@@ -30,7 +18,6 @@ export default function CompanyInfCard(props: CompanyCardProps) {
             <p>{props.company.employees === 0 ? "設定していません" : `${props.company.employees}人`}</p>
           </div>
         </div>
-        {/* <Button variant={"outline"} className="mr-8 text-white bg-emerald-600">編集</Button> */}
         <EditCompany company={props.company} />
       </div>
       <div className="border-t border-gray-200 p-6 space-y-6">

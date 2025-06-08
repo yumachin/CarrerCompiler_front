@@ -47,10 +47,13 @@ export default function InterviewCards() {
   }, [router]);
 
   return (
-    <ul className="bg-white shadow rounded-lg border divide-y divide-gray-200">
-      {interviews.map((interview) => (
-        <InterviewCard key={interview.id} interview={interview} />
-      ))}
-    </ul>
+    <>
+      {interviews.length === 0 && <div className="ml-2">面接の予定はありません。</div> }
+      <ul className="bg-white shadow-lg rounded-lg divide-y divide-gray-200">
+        {interviews.map((interview) => (
+          <InterviewCard key={interview.id} interview={interview} />
+        ))}
+      </ul>
+    </>
   );
 };
