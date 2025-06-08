@@ -22,7 +22,7 @@ export default function MeetingCard(props: MeetingCardProps) {
   };
 
   return (
-    <li className={`p-5 flex items-center ${props.meeting.status ? "bg-rose-100 text-red-500 line-through" : "bg-white"}`}>
+    <li className={`p-5 flex items-center ${props.meeting.status ? "bg-rose-100 text-red-500" : "bg-white"}`}>
       <input
         type="checkbox"
         checked={props.meeting.status}

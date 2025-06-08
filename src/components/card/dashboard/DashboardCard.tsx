@@ -73,7 +73,7 @@ export default async function DashboardCard(props: DashboardCardProps) {
                 </li>
               )
             )
-            : <li className="ml-2 py-4 text-xs text-gray-500">面談・説明会はありません</li>
+            : <li className="ml-2 py-4 text-xs text-gray-500">面談・説明会の予定はありません</li>
           : props.id === 1
             ? dashboardContents.interviews.length !== 0
               ? dashboardContents.interviews?.map(
@@ -105,7 +105,7 @@ export default async function DashboardCard(props: DashboardCardProps) {
                   </li>
                 )
               )
-            : <li className="ml-2 py-4 text-xs text-gray-500">面接はありません</li>
+            : <li className="ml-2 py-4 text-xs text-gray-500">面接の予定はありません</li>
           : dashboardContents.submissions.length !== 0
             ? dashboardContents.submissions?.map(
                 (submission: SubmissionType, index: number) => (

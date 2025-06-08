@@ -46,10 +46,13 @@ export default function CompanyCards() {
   }, [router]);
 
   return (
-    <ul className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-      {companies.map((company) => (
-        <CompanyCard key={company.id} company={company} />
-      ))}
-    </ul>
+    <>
+      {companies.length === 0 && <div className="ml-2">登録企業はありません。</div> }
+      <ul className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        {companies.map((company) => (
+          <CompanyCard key={company.id} company={company} />
+        ))}
+      </ul>
+    </>
   );
 }
