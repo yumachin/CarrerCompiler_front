@@ -3,8 +3,8 @@
   "short_name": "Career Compiler",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#047857",
-  "theme_color": "#047857",
+  "background_color": "#064e3b",
+  "theme_color": "#064e3b",
   "orientation": "portrait",
   "icons": [
     {

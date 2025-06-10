@@ -38,7 +38,7 @@ export default function LinkButtons() {
         {
           items.map((item, index) => (
             <li key={index}>
-              <Link href={item.link} className="flex items-center px-3 py-6 text-sm text-gray-100 font-bold gap-2">
+              <Link href={item.link} className="flex items-center px-3 py-8 text-sm text-gray-100 font-bold gap-2">
                 <item.icon className="w-5 h-5" />
                 <span>{item.name}</span>
               </Link>

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export default function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-700 to-cyan-50">
+    <div className="lg:fixed w-full min-h-screen bg-gradient-to-b from-emerald-700 to-cyan-50">
       <section className="pt-48 text-center">
         <h1 className="text-3xl sm:text-7xl font-bold tracking-tight text-white mb-10">
           就活管理を、シンプルに効率的に

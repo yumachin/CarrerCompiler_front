@@ -22,13 +22,13 @@ export default function Header() {
     <nav className="bg-emerald-900 shadow-sm fixed w-full z-10">
       <div
         onClick={handleClick}
-        className="flex items-center cursor-pointer max-w-xs h-20 px-4"
+        className="flex items-start cursor-pointer max-w-xs h-20 px-4"
       >
         <Image
           src={CareerCompilerLogo}
           alt="Career Compiler"
           width={200}
-          height={200}
+          height={200}  
           style={{ width: "auto", height: "auto" }}
           priority
         />
