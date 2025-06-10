@@ -116,7 +116,7 @@ export default function SignInPage() {
 
             <button
               type="submit"
-              className="w-full py-2 shadow-lg rounded-md text-sm font-bold text-white bg-emerald-700"
+              className="w-full py-2 shadow-lg rounded-md text-sm font-bold text-white bg-emerald-700 cursor-pointer hover:translate-y-0.5"
             >
               ログイン
             </button>

@@ -52,7 +52,7 @@ export default function MeetingCard(props: MeetingCardProps) {
             {props.meeting.date !== null && props.meeting.meetingType !== "" && <p>/</p>}
             <p>{props.meeting.meetingType}</p>
           </div>
-          {props.meeting.onlineUrl !== "" && (
+          {props.meeting.onlineUrl !== "" && props.meeting.status === false && (
             <Link
               href={props.meeting.onlineUrl}
               className="flex items-center text-sm mr-3 text-indigo-500 underline"

@@ -87,7 +87,7 @@ export default function InterviewCard(props: InterviewCardProps) {
             {props.interview.selectionId !== 0 && props.interview.interviewType !== "" && <p>/</p>}
             {getInterviewTypeBadge(props.interview.selectionId)}
           </div>
-          {props.interview.onlineUrl !== "" && (
+          {props.interview.onlineUrl !== "" && props.interview.status === false && (
             <Link
               href={props.interview.onlineUrl}
               className="flex items-center text-sm mr-3 text-indigo-500 underline"

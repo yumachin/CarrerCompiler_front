@@ -92,7 +92,7 @@ export default function SubmissionCard(props: SubmissionCardProps) {
             {props.submission.contactMedia !== "" && props.submission.submissionType !== 0 && <p>/</p>}
             {getSubmissionTypeBadge(props.submission.submissionType)}
           </div>
-          {props.submission.submissionUrl !== "" && (
+          {props.submission.submissionUrl !== "" && props.submission.status === false && (
             <Link
               href={props.submission.submissionUrl}
               className="flex items-center text-sm mr-3 text-indigo-500 underline"

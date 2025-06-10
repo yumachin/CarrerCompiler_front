@@ -15,7 +15,7 @@ export default function CompanyCard(props:CompanyCardProps) {
           {props.company.address ? (
             <p className="mt-2 text-gray-500 text-xs">{props.company.address}</p>
           ) : (
-            <p className="mt-2 text-gray-500 text-xs">所在地が設定されていません</p>
+            <p className="mt-2 text-gray-500 text-xs">所在地が設定されていません。</p>
           )}
         </div>
         

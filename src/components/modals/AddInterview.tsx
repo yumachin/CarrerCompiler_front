@@ -100,7 +100,7 @@ export default function AddInterview() {
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <button className="mr-12 px-4 py-3 shadow-lg rounded-md text-sm font-bold text-white bg-emerald-700">
+          <button className="mr-12 px-4 py-3 shadow-lg rounded-md text-sm font-bold text-white bg-emerald-700 cursor-pointer hover:translate-y-0.5">
             面接を追加
           </button>
         </DialogTrigger>
@@ -109,16 +109,17 @@ export default function AddInterview() {
           aria-describedby="dialog-description"
         >
           <div className="space-y-4">
-            <DialogHeader>
+            <DialogHeader className="mb-6">
               <DialogTitle className="text-lg">面接予定を入力</DialogTitle>
+              <div className="text-xs flex gap-1 items-center">
+                <span className="text-red-500">*</span>
+                <span className="text-gray-500">は必須項目</span>
+              </div>
             </DialogHeader>
             <form onSubmit={handleSubmit(formSubmit)}>
               <div>
-                <label
-                  htmlFor="name"
-                  className="text-sm font-bold text-gray-700"
-                >
-                  会社名
+                <label htmlFor="name" className="text-sm font-bold text-gray-700 flex items-center gap-1">
+                  会社名 <span className="text-red-500 font-bold">*</span>
                 </label>
                 <div className="mt-1 relative">
                   <div className="absolute top-1/3 left-3 -translate-y-[45%] pointer-events-none">

@@ -93,9 +93,9 @@ export default function Setting() {
     <>
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
-          <div className="flex items-center px-6 py-8 text-sm text-gray-100 font-bold gap-2 cursor-pointer">
-            <Settings className="w-5 h-5" />
-            その他設定
+          <div className="relative flex items-center px-3 py-8 text-sm text-gray-100 font-bold">
+            <Settings className="absolute left-3.5 w-5 h-5" />
+            <span className="mx-auto text-center">その他設定</span>
           </div>
         </DialogTrigger>
         <DialogContent className="sm:max-w-[425px] bg-white">
@@ -156,7 +156,7 @@ export default function Setting() {
               </div>
               <button
                 type="submit"
-                className="w-full mt-4 py-2 shadow-md rounded-md text-sm font-bold text-white bg-emerald-700"
+                className="w-full mt-4 py-2 shadow-md rounded-md text-sm font-bold text-white bg-emerald-700 cursor-pointer hover:translate-y-0.5"
               >
                 保存
               </button>
@@ -172,7 +172,7 @@ export default function Setting() {
           </div>
           <button
             type="submit"
-            className="w-full mt-3 py-2 shadow-md rounded-md text-sm font-bold text-white bg-red-500"
+            className="w-full mt-3 py-2 shadow-md rounded-md text-sm font-bold text-white bg-red-500 cursor-pointer hover:translate-y-0.5"
             onClick={() => setConfirm(true)}
           >
             ログアウト

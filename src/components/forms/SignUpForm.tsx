@@ -112,12 +112,12 @@ export default function SignUpForm(props: SignUpFormProps) {
 
           <button
             type="submit"
-            className="w-full mt-3 py-2 shadow-lg rounded-md text-sm font-bold text-white bg-emerald-700"
+            className="w-full mt-3 py-2 shadow-lg rounded-md text-sm font-bold text-white bg-emerald-700 cursor-pointer hover:translate-y-0.5"
           >
             登録
           </button>
 
-          <p className="text-center">
+          <p className="text-center mt-4">
             <Link
               href="/signIn"
               className="text-sm text-emerald-600 underline"

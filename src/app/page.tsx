@@ -17,13 +17,13 @@ export default function HomePage() {
           タスク管理から面接スケジュールまで、就活に必要な全てを一つのプラットフォームで管理
         </p>
         <div className="flex gap-6 justify-center">
-          <Button size="lg" className="text-white bg-teal-800 hover:bg-teal-900">
+          <Button size="lg" className="text-white bg-teal-800 hover:bg-teal-900 cursor-pointer hover:translate-y-1">
             <Link href="/signUp" className="flex items-center font-bold">
               新規アカウント登録
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>
-          <Button size="lg" variant="outline">
+          <Button size="lg" variant="outline" className="cursor-pointer hover:translate-y-1">
             <Link href="/signIn" className="font-bold">ログイン</Link>
           </Button>
         </div>

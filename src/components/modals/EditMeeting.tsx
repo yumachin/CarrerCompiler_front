@@ -85,7 +85,7 @@ export default function EditMeeting(props: EditMeetingProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <button className="px-2 py-0.5 text-sm rounded-sm shadow-md bg-emerald-600 text-white">
+        <button className="px-2.5 py-1.5 text-xs font-bold rounded-sm shadow-md bg-emerald-600 text-white cursor-pointer hover:translate-y-0.5">
           編集
         </button>
       </DialogTrigger>
@@ -94,18 +94,17 @@ export default function EditMeeting(props: EditMeetingProps) {
         aria-describedby="dialog-description"
       >
         <div className="space-y-4">
-          <DialogHeader>
-            <DialogTitle className="text-lg">
-              面談・説明会を入力
-            </DialogTitle>
+          <DialogHeader className="mb-6">
+            <DialogTitle className="text-lg">面談・説明会を入力</DialogTitle>
+            <div className="text-xs flex gap-1 items-center">
+              <span className="text-red-500">*</span>
+              <span className="text-gray-500">は必須項目</span>
+            </div>
           </DialogHeader>
           <form onSubmit={handleSubmit(formSubmit)}>
             <div>
-              <label
-                htmlFor="companyName"
-                className="text-sm font-bold text-gray-700"
-              >
-                会社名
+              <label htmlFor="companyName" className="text-sm font-bold text-gray-700 flex items-center gap-1">
+                会社名 <span className="text-red-500 font-bold">*</span>
               </label>
               <div className="mt-1 relative">
                 <div className="absolute top-1/3 left-3 -translate-y-[45%] pointer-events-none">
