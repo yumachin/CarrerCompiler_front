@@ -48,7 +48,7 @@ export default function InterviewCards() {
 
   return (
     <>
-      {interviews.length === 0 && <div className="ml-2">面接の予定はありません。</div> }
+      {interviews.length === 0 && <div className="ml-2 text-gray-400 font-mono text-sm">面接の予定はありません。</div> }
       <ul className="bg-white shadow-lg rounded-lg divide-y divide-gray-200">
         {interviews.map((interview) => (
           <InterviewCard key={interview.id} interview={interview} />

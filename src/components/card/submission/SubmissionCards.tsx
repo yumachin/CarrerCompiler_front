@@ -47,7 +47,7 @@ export default function SubmissionCards() {
 
   return (
     <>
-      {submissions.length === 0 && <div className="ml-2">提出物・タスクはありません。</div>}
+      {submissions.length === 0 && <div className="ml-2 text-gray-400 font-mono text-sm">提出物・タスクはありません。</div>}
       <ul className="bg-white shadow-lg rounded-lg divide-y divide-gray-200">
         {submissions.map((submission) => (
           <SubmissionCard key={submission.id} submission={submission} />

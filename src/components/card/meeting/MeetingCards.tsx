@@ -48,7 +48,7 @@ export default function MeetingCards() {
 
   return (
     <>
-      {meetings.length === 0 && <div className="ml-2">面談・説明会の予定はありません。</div> }
+      {meetings.length === 0 && <div className="ml-2 text-gray-400 font-mono text-sm">面談・説明会の予定はありません。</div> }
       <ul className="bg-white shadow-lg rounded-lg divide-y divide-gray-200">
         {meetings.map((meeting) => (
           <MeetingCard key={meeting.id} meeting={meeting} />

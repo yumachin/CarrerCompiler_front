@@ -15,7 +15,7 @@ export default function CompanyInfCard(props: CompanyCardProps) {
           </div>
           <div className='flex items-center space-x-1 mt-5 text-sm text-gray-500'>
             <p>従業員数：</p>
-            <p>{props.company.employees === 0 ? "設定していません" : `${props.company.employees}人`}</p>
+            <p>{props.company.employees === 0 ? "設定していません。" : `${props.company.employees}人`}</p>
           </div>
         </div>
         <EditCompany company={props.company} />
@@ -28,7 +28,7 @@ export default function CompanyInfCard(props: CompanyCardProps) {
             </div>
             {
               props.company.website === "" ? (
-                <span className="mt-1 ml-2 text-sm text-gray-800">設定していません</span>
+                <span className="mt-1 ml-2 text-sm text-gray-400">設定していません。</span>
               ) : (
                 <Link 
                   href={props.company.website}
@@ -48,7 +48,7 @@ export default function CompanyInfCard(props: CompanyCardProps) {
             </div>
             {
               props.company.address === "" ? (
-                <span className="mt-1 ml-2 text-sm text-gray-800">設定していません</span>
+                <span className="mt-1 ml-2 text-sm text-gray-400">設定していません。</span>
               ) : (
                 <span className="mt-1 ml-2 text-sm text-gray-800 break-all">
                   {props.company.address}
@@ -63,7 +63,7 @@ export default function CompanyInfCard(props: CompanyCardProps) {
             </div>
             {
               props.company.income === 0 ? (
-                <span className="mt-1 ml-2 text-sm text-gray-800">設定していません</span>
+                <span className="mt-1 ml-2 text-sm text-gray-400">設定していません。</span>
               ) : (
                 <span className="mt-1 ml-2 text-sm text-gray-800">{props.company.income}万円</span>
               )
@@ -77,25 +77,19 @@ export default function CompanyInfCard(props: CompanyCardProps) {
             <div className='flex'>
               {
                 props.company.holidays === 0 && props.company.workingHours === "" ? (
-                  <span className="mt-1 ml-2 text-sm text-gray-800">設定していません</span>
-                ) : (
+                  <span className="mt-1 ml-2 text-sm text-gray-400">設定していません。</span>
+                ) : 
+                props.company.holidays !== 0 && props.company.workingHours !== "" ? (
                   <>
-                    {
-                      props.company.holidays !== 0 ? (
-                        <span className="mt-1 ml-2 text-sm text-gray-800">{props.company.holidays}日以上</span>
-                      ) : (
-                        <span className="mt-1 ml-2 text-sm text-gray-800">設定していません</span>
-                      )
-                    }
-                    <span className="mt-1 ml-2 text-sm text-gray-800">/</span>
-                    {
-                      props.company.workingHours !== "" ? (
-                        <span className="mt-1 ml-2 text-sm text-gray-800">{props.company.workingHours}</span> 
-                      ) : (
-                        <span className="mt-1 ml-2 text-sm text-gray-800">設定していません</span>
-                      )
-                    }
+                    <span className="mt-1 ml-2 text-sm text-gray-800">{props.company.holidays}日以上</span>
+                    <span className="mt-1 ml-2 text-sm text-gray-500">/</span>
+                    <span className="mt-1 ml-2 text-sm text-gray-800">{props.company.workingHours}</span> 
                   </>
+                ) : 
+                props.company.workingHours === "" ? (
+                  <span className="mt-1 ml-2 text-sm text-gray-800">{props.company.holidays}日以上</span>
+                ) : (
+                  <span className="mt-1 ml-2 text-sm text-gray-800">{props.company.workingHours}</span> 
                 )
               }
             </div>
@@ -123,7 +117,7 @@ export default function CompanyInfCard(props: CompanyCardProps) {
           </div>
           {
             props.company.other === "" ? (
-              <span className="mt-1 ml-2 text-sm text-gray-800">設定していません</span>
+              <span className="mt-1 ml-2 text-sm text-gray-400">設定していません。</span>
             ) : (
               <span className="mt-1 ml-2 text-sm text-gray-800">{props.company.other}</span>
             )
