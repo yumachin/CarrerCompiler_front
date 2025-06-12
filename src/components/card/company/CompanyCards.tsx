@@ -47,7 +47,7 @@ export default function CompanyCards() {
 
   return (
     <>
-      {companies.length === 0 && <div className="ml-2">登録企業はありません。</div> }
+      {companies.length === 0 && <div className="ml-2 text-gray-400 font-mono text-sm">登録企業はありません。</div> }
       <ul className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         {companies.map((company) => (
           <CompanyCard key={company.id} company={company} />
