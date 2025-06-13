@@ -26,6 +26,7 @@ export default function DeleteInterview({ id }: { id: number }) {
           id: loadingToast,
         });
         setTimeout(() => {
+          toast.remove();
           setConfirm(false);
           window.location.reload();
         }, 1200);

@@ -15,7 +15,7 @@ import { PostCompany } from "@/utils/api/company";
 import { PostSubmission } from "@/utils/api/submission";
 import { SubmissionValidation } from "@/utils/validations/post";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export default function AddSubmission() {
@@ -74,8 +74,11 @@ export default function AddSubmission() {
           duration: 1200,
           id: loadingToast,
         });
-        setOpen(false);
-        window.location.reload();
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          window.location.reload();
+        }, 1200);
       } else {
         if (res.error === "トークン切れ") {
           toast.error("アクセス権がありません。ログインしなおしてください。", {
@@ -90,8 +93,11 @@ export default function AddSubmission() {
             id: loadingToast,
           });
         }
-        setOpen(false);
-        router.push("/signIn");
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          router.push("/signIn");
+        }, 1200);
       }
     } catch (error) {
       console.error("面談・説明会予定追加エラー", error);
@@ -116,10 +122,10 @@ export default function AddSubmission() {
           <div className="space-y-4">
             <DialogHeader className="mb-6">
               <DialogTitle className="text-lg">提出物・タスクを入力</DialogTitle>
-              <div className="text-xs flex gap-1 items-center">
+              <DialogDescription className="text-xs flex gap-1 items-center">
                 <span className="text-red-500">*</span>
                 <span className="text-gray-500">は必須項目</span>
-              </div>
+              </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit(formSubmit)}>
               <div>

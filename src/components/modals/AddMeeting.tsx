@@ -15,7 +15,7 @@ import { PostCompany } from "@/utils/api/company";
 import { PostMeeting } from "@/utils/api/meeting";
 import { MeetingValidation } from "@/utils/validations/post";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
 export default function AddMeeting() {
   const [open, setOpen] = useState(false);
@@ -45,8 +45,11 @@ export default function AddMeeting() {
           duration: 1200,
           id: loadingToast,
         });
-        setOpen(false);
-        window.location.reload();
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          window.location.reload();
+        }, 1200);
       } else {
         if (res.error === "トークン切れ") {
           toast.error("アクセス権がありません。ログインしなおしてください。", {
@@ -61,12 +64,17 @@ export default function AddMeeting() {
             id: loadingToast
           });
         }
-        setOpen(false);
-        router.push("/signIn");
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          router.push("/signIn");
+        }, 1200);
       }
     } catch (error) {
       console.error("面談・説明会予定追加エラー", error);
-      toast.error("面談・説明会の予定の追加に失敗しました。", { id: loadingToast });
+      toast.error("面談・説明会の予定の追加に失敗しました。", {
+        id: loadingToast
+      });
     }
   };
 
@@ -85,10 +93,10 @@ export default function AddMeeting() {
           <div className="space-y-4">
             <DialogHeader className="mb-6">
               <DialogTitle className="text-lg">面談・説明会の予定を入力</DialogTitle>
-              <div className="text-xs flex gap-1 items-center">
+              <DialogDescription className="text-xs flex gap-1 items-center">
                 <span className="text-red-500">*</span>
                 <span className="text-gray-500">は必須項目</span>
-              </div>
+              </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit(formSubmit)}>
               <div>

@@ -15,7 +15,7 @@ import { toastStyle } from "@/styles/toastStyle";
 import { UpdateCompany } from "@/utils/api/company";
 import { UpdateSubmission } from "@/utils/api/submission";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export default function EditSubmission(props: EditSubmissionProps) {
@@ -127,10 +127,10 @@ export default function EditSubmission(props: EditSubmissionProps) {
         <div className="space-y-4">
           <DialogHeader className="mb-6">
             <DialogTitle className="text-lg">提出物・タスクを入力</DialogTitle>
-            <div className="text-xs flex gap-1 items-center">
+            <DialogDescription className="text-xs flex gap-1 items-center">
               <span className="text-red-500">*</span>
               <span className="text-gray-500">は必須項目</span>
-            </div>
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(formSubmit)}>
             <div>

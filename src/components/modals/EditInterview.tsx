@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Building2, CalendarDays, GitBranch, Globe, Presentation } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { ReactNode, useEffect, useState } from "react";
+import { ReactNode, useState } from "react";
 import DatePicker from "react-datepicker";
 import { Controller, useForm } from "react-hook-form";
 import toast from "react-hot-toast";
@@ -15,47 +15,17 @@ import { toastStyle } from "@/styles/toastStyle";
 import { UpdateCompany } from "@/utils/api/company";
 import { UpdateInterview } from "@/utils/api/interview";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export default function EditInterview(props: EditInterviewProps) {
   const [open, setOpen] = useState(false);
-
-  const [companyName, setCompanyName] = useState(props.interview.companyName);
-  const [date, setDate] = useState<Date | null | undefined>(props.interview.date ? new Date(props.interview.date) : null);
-  const [selection, setSelection] = useState("");
-  const [selectionId, setSelectionId] = useState(props.interview.selectionId);
-  const [interviewType, setInterviewType] = useState(props.interview.interviewType);
-  const [onlineUrl, setOnlineUrl] = useState(props.interview.onlineUrl);
-
   const router = useRouter();
 
-  useEffect(() => {
-    switch (selectionId) {
-      case 0:
-        setSelection("");
-        break;
-      case 1:
-        setSelection("1次面接");
-        break;
-      case 2:
-        setSelection("2次面接");
-        break;
-      case 3:
-        setSelection("3次面接");
-        break;
-      case 4:
-        setSelection("4次面接");
-        break;
-      case 10:
-        setSelection("最終面接");
-        break;
-    }
-  }, [selectionId]);
-
-  const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<InterviewType>({
+  const { register, handleSubmit, control, setValue, watch, formState: { errors } } = useForm<InterviewType>({
     mode: "onSubmit",
     defaultValues: {
+      companyName: props.interview.companyName,
       date: props.interview.date ? new Date(props.interview.date) : null,
       selectionId: props.interview.selectionId,
       interviewType: props.interview.interviewType, 
@@ -64,12 +34,29 @@ export default function EditInterview(props: EditInterviewProps) {
     resolver: zodResolver(InterviewValidation)
   });
 
-  const formSubmit = async ({ companyName, date, onlineUrl }: InterviewType) => {
+  // フォームの値を監視
+  const watchedSelectionId = watch("selectionId");
+
+  // 選考状況のラベルを取得する関数
+  const getSelectionLabel = (selectionId: number): string => {
+    switch (selectionId) {
+      case 1: return "1次面接";
+      case 2: return "2次面接";
+      case 3: return "3次面接";
+      case 4: return "4次面接";
+      case 10: return "最終面接";
+      default: return "選択してください";
+    }
+  };
+
+  const formSubmit = async ({ companyName, date, selectionId, interviewType, onlineUrl }: InterviewType) => {
     toast.dismiss();
     const loadingToast = toast.loading("編集中です...");
 
     try {
+      // 会社名のみを更新
       await UpdateCompany(props.interview.companyId, companyName);
+
       const res = await UpdateInterview(
         props.interview.id,
         props.interview.companyId,
@@ -78,13 +65,17 @@ export default function EditInterview(props: EditInterviewProps) {
         interviewType,
         onlineUrl
       );
+
       if (!res.error) {
         toast.success("面接の編集に成功しました！", {
           duration: 1200,
           id: loadingToast,
         });
-        setOpen(false);
-        window.location.reload();
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          window.location.reload();
+        }, 1200);
       } else {
         if (res.error === "トークン切れ") {
           toast.error("アクセス権がありません。ログインしなおしてください。", {
@@ -99,8 +90,11 @@ export default function EditInterview(props: EditInterviewProps) {
             id: loadingToast,
           });
         }
-        setOpen(false);
-        router.push("/signIn");
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          router.push("/signIn");
+        }, 1200);
       }
     } catch (error) {
       console.error("面接編集エラー", error);
@@ -123,11 +117,11 @@ export default function EditInterview(props: EditInterviewProps) {
       >
         <div className="space-y-4">
           <DialogHeader className="mb-6">
-            <DialogTitle className="text-lg">面接内容を入力</DialogTitle>
-            <div className="text-xs flex gap-1 items-center">
+            <DialogTitle className="text-lg">面接内容を編集</DialogTitle>
+            <DialogDescription id="dialog-description" className="text-xs flex gap-1 items-center">
               <span className="text-red-500">*</span>
               <span className="text-gray-500">は必須項目</span>
-            </div>
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(formSubmit)}>
             <div>
@@ -144,8 +138,6 @@ export default function EditInterview(props: EditInterviewProps) {
                   {...register("companyName")}
                   placeholder="株式会社CareerCompiler"
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
                 />
                 <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
                   {errors.companyName?.message as ReactNode}
@@ -159,10 +151,7 @@ export default function EditInterview(props: EditInterviewProps) {
                 </label>
                 <button
                   type="button"
-                  onClick={() => {
-                    setDate(null)
-                    setValue("date", null)
-                  }}
+                  onClick={() => setValue("date", null)}
                   className="mr-2 text-xs font-bold text-red-400 cursor-pointer"
                 >
                   クリア
@@ -177,11 +166,8 @@ export default function EditInterview(props: EditInterviewProps) {
                   name="date"
                   render={({ field }) => (
                     <DatePicker
-                      selected={date}
-                      onChange={(selectedDate) => {
-                        setDate(selectedDate);
-                        field.onChange(selectedDate);
-                      }}
+                      selected={field.value}
+                      onChange={(selectedDate) => field.onChange(selectedDate)}
                       showTimeSelect
                       timeFormat="HH:mm"
                       timeIntervals={30}
@@ -213,8 +199,6 @@ export default function EditInterview(props: EditInterviewProps) {
                   {...register("interviewType")}
                   placeholder="対面 / 東京本社"
                   className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
-                  value={interviewType}
-                  onChange={(e) => setInterviewType(e.target.value)}
                 />
                 <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
                   {errors.interviewType?.message as ReactNode}
@@ -228,10 +212,7 @@ export default function EditInterview(props: EditInterviewProps) {
                 </label>
                 <button
                   type="button"
-                  onClick={() => {
-                    setSelectionId(0)
-                    setValue("selectionId", 0)
-                  }}
+                  onClick={() => setValue("selectionId", 0)}
                   className="mr-2 text-xs font-bold text-red-400 cursor-pointer"
                 >
                   クリア
@@ -248,51 +229,26 @@ export default function EditInterview(props: EditInterviewProps) {
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
                         <button
-                          id="selection"
-                          className="flex min-h-[2.6rem] w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm text-md font-normal cursor-pointer"
+                          type="button"
+                          className="flex items-center justify-start min-h-[2.6rem] w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm text-md font-normal cursor-pointer"
                         >
-                          {selection}
+                          {getSelectionLabel(watchedSelectionId)}
                         </button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setSelectionId(1);
-                            field.onChange(1);
-                          }}
-                        >
+                        <DropdownMenuItem onClick={() => field.onChange(1)}>
                           1次面接
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setSelectionId(2);
-                            field.onChange(2);
-                          }}
-                        >
+                        <DropdownMenuItem onClick={() => field.onChange(2)}>
                           2次面接
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setSelectionId(3);
-                            field.onChange(3);
-                          }}
-                        >
+                        <DropdownMenuItem onClick={() => field.onChange(3)}>
                           3次面接
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setSelectionId(4);
-                            field.onChange(4);
-                          }}
-                        >
+                        <DropdownMenuItem onClick={() => field.onChange(4)}>
                           4次面接
                         </DropdownMenuItem>
-                        <DropdownMenuItem
-                          onClick={() => {
-                            setSelectionId(10);
-                            field.onChange(10);
-                          }}
-                        >
+                        <DropdownMenuItem onClick={() => field.onChange(10)}>
                           最終面接
                         </DropdownMenuItem>
                       </DropdownMenuContent>
@@ -316,13 +272,11 @@ export default function EditInterview(props: EditInterviewProps) {
                   <Globe className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="submissionUrl"
+                  id="onlineUrl"
                   type="text"
                   {...register("onlineUrl")}
                   placeholder="https://career.com"
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                  value={onlineUrl}
-                  onChange={(e) => setOnlineUrl(e.target.value)}
                 />
                 <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
                   {errors.onlineUrl?.message as ReactNode}

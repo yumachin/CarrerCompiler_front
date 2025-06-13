@@ -15,7 +15,7 @@ import { PostCompany } from "@/utils/api/company";
 import { PostInterview } from "@/utils/api/interview";
 import { InterviewValidation } from "@/utils/validations/post";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "../ui/dropdown-menu";
 
 export default function AddInterview() {
@@ -71,8 +71,11 @@ export default function AddInterview() {
           duration: 1200,
           id: loadingToast
         });
-        setOpen(false);
-        window.location.reload();
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          window.location.reload();
+        }, 1200);
       } else {
         if (res.error === "トークン切れ") {
           toast.error("アクセス権がありません。ログインしなおしてください。", {
@@ -87,12 +90,17 @@ export default function AddInterview() {
             id: loadingToast
           });
         }
-        setOpen(false);
-        router.push("/signIn");
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          router.push("/signIn");
+        }, 1200);
       }
     } catch (error) {
       console.error("面接予定追加エラー", error);
-      toast.error("面接の予定の追加に失敗しました。", { id: loadingToast });
+      toast.error("面接の予定の追加に失敗しました。", {
+        id: loadingToast
+      });
     }
   };
 
@@ -111,10 +119,10 @@ export default function AddInterview() {
           <div className="space-y-4">
             <DialogHeader className="mb-6">
               <DialogTitle className="text-lg">面接予定を入力</DialogTitle>
-              <div className="text-xs flex gap-1 items-center">
+              <DialogDescription className="text-xs flex gap-1 items-center">
                 <span className="text-red-500">*</span>
                 <span className="text-gray-500">は必須項目</span>
-              </div>
+              </DialogDescription>
             </DialogHeader>
             <form onSubmit={handleSubmit(formSubmit)}>
               <div>

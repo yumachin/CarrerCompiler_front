@@ -15,21 +15,17 @@ import { toastStyle } from "@/styles/toastStyle";
 import { UpdateCompany } from "@/utils/api/company";
 import { UpdateMeeting } from "@/utils/api/meeting";
 
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog";
 
 export default function EditMeeting(props: EditMeetingProps) {
   const [open, setOpen] = useState(false);
-
-  const [companyName, setCompanyName] = useState(props.meeting.companyName);
-  const [date, setDate] = useState<Date | null | undefined>(props.meeting.date ? new Date(props.meeting.date) : null);
-  const [meetingType, setMeetingType] = useState(props.meeting.meetingType);
-  const [onlineUrl, setOnlineUrl] = useState(props.meeting.onlineUrl);
 
   const router = useRouter();
 
   const { register, handleSubmit, control, setValue, formState: { errors } } = useForm<MeetingType>({
     mode: "onSubmit",
     defaultValues: {
+      companyName: props.meeting.companyName,
       date: props.meeting.date ? new Date(props.meeting.date) : null, 
       meetingType: props.meeting.meetingType, 
       onlineUrl: props.meeting.onlineUrl 
@@ -37,12 +33,13 @@ export default function EditMeeting(props: EditMeetingProps) {
     resolver: zodResolver(MeetingValidation)
   });
 
-  const formSubmit = async ({ companyName, date, onlineUrl }: MeetingType) => {
+  const formSubmit = async ({ companyName, date, meetingType, onlineUrl }: MeetingType) => {
     toast.dismiss();
     const loadingToast = toast.loading("編集中です...");
 
     try {
       await UpdateCompany(props.meeting.companyId, companyName);
+      
       const res = await UpdateMeeting(
         props.meeting.id,
         props.meeting.companyId,
@@ -50,13 +47,17 @@ export default function EditMeeting(props: EditMeetingProps) {
         meetingType,
         onlineUrl
       );
+      
       if (!res.error) {
         toast.success("面談・説明会の編集に成功しました！", {
           duration: 1200,
           id: loadingToast,
         });
-        setOpen(false);
-        window.location.reload();
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          window.location.reload();
+        }, 1200);
       } else {
         if (res.error === "トークン切れ") {
           toast.error("アクセス権がありません。ログインしなおしてください。", {
@@ -71,8 +72,11 @@ export default function EditMeeting(props: EditMeetingProps) {
             id: loadingToast,
           });
         }
-        setOpen(false);
-        router.push("/signIn");
+        setTimeout(() => {
+          toast.remove();
+          setOpen(false);
+          router.push("/signIn");
+        }, 1200);
       }
     } catch (error) {
       console.error("面談・説明会編集エラー", error);
@@ -95,11 +99,11 @@ export default function EditMeeting(props: EditMeetingProps) {
       >
         <div className="space-y-4">
           <DialogHeader className="mb-6">
-            <DialogTitle className="text-lg">面談・説明会を入力</DialogTitle>
-            <div className="text-xs flex gap-1 items-center">
+            <DialogTitle className="text-lg">面談・説明会を編集</DialogTitle>
+            <DialogDescription className="text-xs flex gap-1 items-center">
               <span className="text-red-500">*</span>
               <span className="text-gray-500">は必須項目</span>
-            </div>
+            </DialogDescription>
           </DialogHeader>
           <form onSubmit={handleSubmit(formSubmit)}>
             <div>
@@ -116,8 +120,6 @@ export default function EditMeeting(props: EditMeetingProps) {
                   {...register("companyName")}
                   placeholder="株式会社CareerCompiler"
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                  value={companyName}
-                  onChange={(e) => setCompanyName(e.target.value)}
                 />
                 <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
                   {errors.companyName?.message as ReactNode}
@@ -131,10 +133,7 @@ export default function EditMeeting(props: EditMeetingProps) {
                 </label>
                 <button
                   type="button"
-                  onClick={() => {
-                    setDate(null)
-                    setValue("date", null)
-                  }}
+                  onClick={() => setValue("date", null)}
                   className="mr-2 text-xs font-bold text-red-400 cursor-pointer"
                 >
                   クリア
@@ -149,11 +148,8 @@ export default function EditMeeting(props: EditMeetingProps) {
                   name="date"
                   render={({ field }) => (
                     <DatePicker
-                      selected={date}
-                      onChange={(selectedDate) => {
-                        setDate(selectedDate);
-                        field.onChange(selectedDate);
-                      }}
+                      selected={field.value}
+                      onChange={(selectedDate) => field.onChange(selectedDate)}
                       showTimeSelect
                       timeFormat="HH:mm"
                       timeIntervals={30}
@@ -185,8 +181,6 @@ export default function EditMeeting(props: EditMeetingProps) {
                   {...register("meetingType")}
                   placeholder="対面 / 東京本社"
                   className="w-full pl-10 py-2 border border-gray-300 rounded-md shadow-sm"
-                  value={meetingType}
-                  onChange={(e) => setMeetingType(e.target.value)}
                 />
                 <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
                   {errors.meetingType?.message as ReactNode}
@@ -205,13 +199,11 @@ export default function EditMeeting(props: EditMeetingProps) {
                   <Globe className="h-5 w-5 text-gray-400" />
                 </div>
                 <input
-                  id="submissionUrl"
+                  id="onlineUrl"
                   type="text"
                   {...register("onlineUrl")}
                   placeholder="https://career.com"
                   className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md shadow-sm"
-                  value={onlineUrl}
-                  onChange={(e) => setOnlineUrl(e.target.value)}
                 />
                 <p className="text-red-400 min-h-[1rem] text-xs mt-1 mb-2 ml-2">
                   {errors.onlineUrl?.message as ReactNode}
