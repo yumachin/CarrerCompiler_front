@@ -14,7 +14,7 @@ export default async function DashboardCard(props: DashboardCardProps) {
   let dashboardContents;
   try {
     dashboardContents = await GetDashboardData();
-    console.log("Dashboard Contents:", dashboardContents);
+    // console.log("Dashboard Contents:", dashboardContents);
     dashboardContents.meetings = dashboardContents.meetings || [];
     dashboardContents.interviews = dashboardContents.interviews || [];
     dashboardContents.submissions = dashboardContents.submissions || [];

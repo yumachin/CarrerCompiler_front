@@ -8,7 +8,7 @@ export default async function CountCards() {
   let tableCounts;
   try {
     tableCounts = await GetCounts();
-    console.log("Table Counts:", tableCounts);
+    // console.log("Table Counts:", tableCounts);
   } catch (error) {
     console.error(error);
   }
