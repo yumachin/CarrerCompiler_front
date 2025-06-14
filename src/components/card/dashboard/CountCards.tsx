@@ -62,6 +62,8 @@ export const GetCounts = async () => {
   const email = cookieStore.get('email')?.value;
   const uid = cookieStore.get('uid')?.value;
 
+  console.log("emailは、、、", email)
+  
   try {
     const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/counts`, {
       method: "GET",
