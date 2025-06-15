@@ -1,17 +1,59 @@
-import camelcaseKeys from "camelcase-keys";
+"use client";
+
 import { Building2, Calendar, FileText } from "lucide-react";
-import { cookies } from "next/headers";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import toast from "react-hot-toast";
+
+import Loading from "@/components/loading";
+import { toastStyle } from "@/styles/toastStyle";
+import { GetCounts } from "@/utils/api/dashboard";
 
 import CountCard from "./CountCard";
 
-export default async function CountCards() {
-  let tableCounts;
-  try {
-    tableCounts = await GetCounts();
-    // console.log("Table Counts:", tableCounts);
-  } catch (error) {
-    console.error(error);
-  }
+export default function CountCards() {
+  const [tableCounts, setTableCounts] = useState({
+    submissionCount: 0,
+    meetingCount: 0,
+    interviewCount: 0,
+    companyCount: 0,
+  });
+  const [loading, setLoading] = useState<boolean>(true);
+  const router = useRouter();
+
+  useEffect(() => {
+    setLoading(true);
+    const fetchCounts = async () => {
+      toast.dismiss();
+      try {
+        const res = await GetCounts();
+        if (!res.error) {
+          setTableCounts(res);
+        } else {
+          if (res.error === "トークン切れ") {
+            toast.error("アクセス権がありません。ログインしなおしてください。", {
+              style: toastStyle,
+              duration: 1200,
+              id: "1",
+            });
+          } else {
+            toast.error("ユーザーが見つかりません。ログインしなおしてください。", {
+              style: toastStyle,
+              duration: 1200,
+              id: "2",
+            });
+          }
+          router.push("/signIn");
+        }
+      } catch (error) {
+        console.error("各テーブルレコード数取得エラー", error);
+        toast.error("各テーブルレコード数取得に失敗しました。", { id: "3" });
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCounts();
+  }, [router]);
 
   const items = [
     {
@@ -41,44 +83,20 @@ export default async function CountCards() {
   ];
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mt-4">
-      {items.map((item, index) => (
-        <CountCard
-          key={index}
-          link={item.link}
-          icon={<item.icon className="text-gray-400" />}
-          name={item.name}
-          count={item.count}
-        />
-      ))}
-    </div>
+    <>
+      {loading ? <Loading /> : (
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 mt-4">
+          {items.map((item, index) => (
+            <CountCard
+              key={index}
+              link={item.link}
+              icon={<item.icon className="text-gray-400" />}
+              name={item.name}
+              count={item.count}
+            />
+          ))}
+        </div>
+      )}
+    </>
   );
 }
-
-export const GetCounts = async () => {
-  const cookieStore = await cookies();
-  const accessToken = cookieStore.get('access-token')?.value;
-  const client = cookieStore.get('client')?.value;
-  const email = cookieStore.get('email')?.value;
-  const uid = cookieStore.get('uid')?.value;
-
-  console.log("emailは、、、", email)
-  
-  try {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/counts`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "access-token": accessToken || "",
-        "client": client || "",
-        "email": email || "",
-        "uid": uid || ""
-      }
-    });
-    const data = await res.json();
-    return camelcaseKeys(data, { deep: true });
-  } catch (error) {
-    console.error(error);
-    throw new Error("各テーブル数の取得に失敗");
-  }
-};

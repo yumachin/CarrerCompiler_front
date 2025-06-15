@@ -44,9 +44,7 @@ export const PostCompany = async (name: string) => {
       body: JSON.stringify({company: { name }}),
       credentials: 'include'
     });
-    console.log("resは", res);
     const data = await res.json();
-    console.log("dataは", data);
     return data;
   } catch (error) {
     console.error(error);
